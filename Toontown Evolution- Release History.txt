@@ -1,0 +1,4 @@
+May 16, 2017:
+
+1.0.0:
+* Official Public Release
