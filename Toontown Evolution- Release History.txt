@@ -3,3 +3,7 @@
 
 1.1.0:
 * Shirt Style and Bottom Style Buttons for Clothes GUI in Make A Toon
+
+1.1.1:
+* Toon on Loading Screen
+* Bug Fix for Music Loader
