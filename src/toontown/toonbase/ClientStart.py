@@ -5,7 +5,7 @@ import gc
 # Due to the newer Panda3D versions being less stable on the C++ side of things,
 # we need to disable the garbage collector during startup or a thread related
 # error will cause an AttributeError.
-# ~ Chan
+# ~ Typical
 gc.disable()
 
 
@@ -85,8 +85,8 @@ import __builtin__
 try:
     launcher
 except:
-    from toontown.launcher.TTILauncher import TTILauncher
-    launcher = TTILauncher()
+    from toontown.launcher.TTELauncher import TTELauncher
+    launcher = TTELauncher()
     __builtin__.launcher = launcher
 
 
