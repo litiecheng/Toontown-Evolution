@@ -1,8 +1,8 @@
 import os
 import time
 import datetime
-from pandac.PandaModules import Filename, DSearchPath, TextNode
-from pandac.PandaModules import HTTPClient, Ramfile, DocumentSpec
+from panda3d.core import Filename, DSearchPath, TextNode
+from panda3d.core import HTTPClient, Ramfile, DocumentSpec
 from direct.showbase import DirectObject
 from direct.gui.DirectGui import DirectFrame, DGG
 from direct.directnotify import DirectNotifyGlobal
@@ -103,7 +103,7 @@ class DirectNewsFrame(DirectObject.DirectObject):
         newsDirAsFile = vfs.getFile(Filename(newsDir))
         fileList = newsDirAsFile.scanDirectory()
         fileNames = fileList.getFiles()
-        self.notify.debug('filenames=%s' % fileNames)
+        #self.notify.debug('filenames=%s' % fileNames)
         homeFileNames = set([])
         for name in fileNames:
             self.notify.debug('processing %s' % name)
@@ -169,8 +169,8 @@ class DirectNewsFrame(DirectObject.DirectObject):
         self.mainFrame = DirectFrame(parent=self.backFrame, frameSize=self.FrameDimensions, frameColor=(1, 0, 0, 1))
 
     def activate(self):
-        if hasattr(self, 'createdTime') and self.createdTime < base.cr.inGameNewsMgr.getLatestIssue() and self.NewsOverHttp and not self.redownloadingNews:
-            self.redownloadNews()
+        if hasattr(self, 'createdTime') and self.createdTime and self.NewsOverHttp and not self.redownloadingNews:
+            self.active = False
         else:
             self.addDownloadingTextTask()
         if self.needsParseNews and not self.redownloadingNews:
@@ -369,7 +369,7 @@ class DirectNewsFrame(DirectObject.DirectObject):
                 self.redownloadNews()
 
     def getInGameNewsUrl(self):
-        result = base.config.GetString('fallback-news-url', 'http://cdn.toontown.disney.go.com/toontown/en/gamenews/')
+        result = base.config.GetString('fallback-news-url', 'http://cdn.toontown.disney.go.com/toontown/en/gamenews/') # TODO: Place our news URL here.
         override = base.config.GetString('in-game-news-url', '')
         if override:
             self.notify.info('got an override url,  using %s for in game news' % override)

@@ -8,7 +8,7 @@ audio-library-name p3openal_audio
 model-path ../resources
 
 # Server:
-server-version 1.1.1
+server-version 1.2.0
 shard-low-pop 25
 shard-mid-pop 50
 accountdb-type developer
@@ -30,6 +30,8 @@ want-pets #f
 want-parties #f
 want-cogdominiums #f
 want-achievements #f
+want-news-page #t 
+want-news-tab #t
 
 # Chat:
 want-whitelist #f

@@ -714,15 +714,12 @@ AvPropTargetCat = ((ATK_SINGLE_TARGET,
   ATK_SINGLE_TARGET,
   ATK_SINGLE_TARGET,
   ATK_GROUP_TARGET))
-AvPropTarget = (0,
- 3,
- 0,
- 2,
- 3,
- 3,
- 3)
+AvPropTarget = (0, 3, 0, 2, 3, 3, 3)
+NumRoundsLured= [2, 2, 3, 3, 4, 4, 15]
 
 def getAvPropDamage(attackTrack, attackLevel, exp, organicBonus = False, propBonus = False, propAndOrganicBonusStack = False):
+    if attackTrack == LURE_TRACK:
+        return NumRoundsLured[attackLevel]
     minD = AvPropDamage[attackTrack][attackLevel][0][0]
     maxD = AvPropDamage[attackTrack][attackLevel][0][1]
     minE = AvPropDamage[attackTrack][attackLevel][1][0]

@@ -244,7 +244,7 @@ class ToonBase(OTPBase.OTPBase):
 
         # Free black/white Toons:
         self.wantYinYang = config.GetBool('want-yin-yang', False)
-        
+        self.wantNews = settings.get('want-News', True)
         self.wantCustomControls = settings.get('want-Custom-Controls', False)
 
         self.MOVE_UP = 'arrow_up'   

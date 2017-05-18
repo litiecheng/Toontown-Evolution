@@ -1,9 +1,15 @@
 1.0.0:
-* Official Public Release
+1. Official Public Release
 
 1.1.0:
-* Shirt Style and Bottom Style Buttons for Clothes GUI in Make A Toon
+1 Shirt Style and Bottom Style Buttons for Clothes GUI in Make A Toon
 
 1.1.1:
-* Toon on Loading Screen
-* Bug Fix for Music Loader
+1. Toon on Loading Screen
+2. Bug Fix for Music Loader
+
+1.2.0:
+1. In-Game News from Toontown Online
+2. Moving Spotlights in Sellbot HQ
+3. Rounds Active text for Lure Gags
+4. Bug Fix for no music during Loading Screen

@@ -6,11 +6,15 @@ from direct.gui import DirectGui
 from toontown.toonbase import TTLocalizer
 from toontown.toon import Toon
 from direct.fsm import State
+from direct.actor.Actor import Actor
 import FactoryExterior
 import FactoryInterior
 import SellbotHQExterior
 import SellbotHQBossBattle
 from pandac.PandaModules import DecalEffect, NodePath
+from direct.interval.IntervalGlobal import *
+from direct.interval.LerpInterval import LerpHprInterval
+from panda3d.core import Vec3
 aspectSF = 0.7227
 
 class SellbotCogHQLoader(CogHQLoader.CogHQLoader):
@@ -33,6 +37,13 @@ class SellbotCogHQLoader(CogHQLoader.CogHQLoader):
         self.cogHQLobbyModelPath = 'phase_9/models/cogHQ/SellbotHQLobby'
         self.factoryExteriorModelPath = 'phase_9/models/cogHQ/SellbotFactoryExterior'
         self.geom = None
+        self.factoryGeom = None
+        self.spot1Sequence = None
+        self.spot2Sequence = None
+        self.spot3Sequence = None
+        self.spot4Sequence = None
+        self.spot5Sequence = None
+        self.spot6Sequence = None
 
     def load(self, zoneId):
         CogHQLoader.CogHQLoader.load(self, zoneId)
@@ -42,6 +53,9 @@ class SellbotCogHQLoader(CogHQLoader.CogHQLoader):
         if self.geom:
             self.geom.removeNode()
             self.geom = None
+        if self.factoryGeom:
+            self.factoryGeom.removeNode()
+            self.factoryGeom = None
         CogHQLoader.CogHQLoader.unloadPlaceGeom(self)
 
     def loadPlaceGeom(self, zoneId):
@@ -49,9 +63,6 @@ class SellbotCogHQLoader(CogHQLoader.CogHQLoader):
         zoneId = zoneId - zoneId % 100
         if zoneId == ToontownGlobals.SellbotHQ:
             self.geom = loader.loadModel(self.cogHQExteriorModelPath)
-            factoryPOV = loader.loadModel('phase_9/models/cogHQ/SellbotFactoryPov')
-            factoryPOV.reparentTo(self.geom)
-            factoryPOV.setPosHpr(580.62, -139.52, 15.22, 272.73, 0, 0)
             dgLinkTunnel = self.geom.find('**/Tunnel1')
             dgLinkTunnel.setName('linktunnel_dg_5316_DNARoot')
             factoryLinkTunnel = self.geom.find('**/Tunnel2')
@@ -92,11 +103,31 @@ class SellbotCogHQLoader(CogHQLoader.CogHQLoader):
                 door.flattenMedium()
             cogSign.removeNode()
             self.geom.flattenMedium()
+        
+            if self.factoryGeom:
+                self.factoryGeom.removeNode()
+            self.factoryGeom = loader.loadModel(self.factoryExteriorModelPath)
+            self.factoryGeom.setPos(505, -200, -26)
+            self.factoryGeom.setHpr(-90, 0, 0)
+            self.factoryGeom.setScale(0.9)
+            self.factoryGeom.find('**/tunnel_group2').removeNode()
+
+            self.spotLights = self.geom.find('**/SpotLights')
+            self.spot1Sequence = Sequence(LerpHprInterval(self.spotLights.find('**/Spot1'), 7, Vec3(0, 1, 10), startHpr=Vec3(0, 1, -5)), LerpHprInterval(self.spotLights.find('**/Spot1'), 7, Vec3(0, 1, -5), startHpr=Vec3(0, 1, 10)))
+            self.spot2Sequence = Sequence(LerpHprInterval(self.spotLights.find('**/Spot2'), 7, Vec3(0, 1, 10), startHpr=Vec3(0, 1, -5)), LerpHprInterval(self.spotLights.find('**/Spot2'), 7, Vec3(0, 1, -5), startHpr=Vec3(0, 1, 10)))
+            self.spot3Sequence = Sequence(LerpHprInterval(self.spotLights.find('**/Spot3'), 7, Vec3(0, 1, 10), startHpr=Vec3(0, 1, -5)), LerpHprInterval(self.spotLights.find('**/Spot3'), 7, Vec3(0, 1, -5), startHpr=Vec3(0, 1, 10)))
+            self.spot4Sequence = Sequence(LerpHprInterval(self.spotLights.find('**/Spot4'), 7, Vec3(0, 1, 10), startHpr=Vec3(0, 1, -5)), LerpHprInterval(self.spotLights.find('**/Spot4'), 7, Vec3(0, 1, -5), startHpr=Vec3(0, 1, 10)))
+            self.spot5Sequence = Sequence(LerpHprInterval(self.spotLights.find('**/Spot5'), 7, Vec3(0, 1, 10), startHpr=Vec3(0, 1, -5)), LerpHprInterval(self.spotLights.find('**/Spot5'), 7, Vec3(0, 1, -5), startHpr=Vec3(0, 1, 10)))
+            self.spot6Sequence = Sequence(LerpHprInterval(self.spotLights.find('**/Spot6'), 7, Vec3(0, 1, 10), startHpr=Vec3(0, 1, -5)), LerpHprInterval(self.spotLights.find('**/Spot6'), 7, Vec3(0, 1, -5), startHpr=Vec3(0, 1, 10)))
+            self.spot1Sequence.loop()
+            self.spot2Sequence.loop()
+            self.spot3Sequence.loop()
+            self.spot4Sequence.loop()
+            self.spot5Sequence.loop()
+            self.spot6Sequence.loop()
+
         elif zoneId == ToontownGlobals.SellbotFactoryExt:
             self.geom = loader.loadModel(self.factoryExteriorModelPath)
-            SellbotTowersPOV = loader.loadModel('phase_9/models/cogHQ/SellbotHQTowers')
-            SellbotTowersPOV.reparentTo(self.geom)
-            SellbotTowersPOV.setPosHpr(-148, -665, -10, 88, 0, 0)
             factoryLinkTunnel = self.geom.find('**/tunnel_group2')
             factoryLinkTunnel.setName('linktunnel_sellhq_11000_DNARoot')
             factoryLinkTunnel.find('**/tunnel_sphere').setName('tunnel_trigger')
