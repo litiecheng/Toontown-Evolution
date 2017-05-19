@@ -169,12 +169,7 @@ class DirectNewsFrame(DirectObject.DirectObject):
         self.mainFrame = DirectFrame(parent=self.backFrame, frameSize=self.FrameDimensions, frameColor=(1, 0, 0, 1))
 
     def activate(self):
-        if hasattr(self, 'createdTime') and self.createdTime and self.NewsOverHttp and not self.redownloadingNews:
-            self.active = False
-        else:
-            self.addDownloadingTextTask()
-        if self.needsParseNews and not self.redownloadingNews:
-            self.parseNewsContent()
+        self.redownloadNews()
         self.active = True
 
     def deactivate(self):

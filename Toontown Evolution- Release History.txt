@@ -13,3 +13,7 @@
 2. Moving Spotlights in Sellbot HQ
 3. Rounds Active text for Lure Gags
 4. Bug Fix for no music during Loading Screen
+
+1.2.1:
+1. Racing
+2. Music Tempo now changes in Racing

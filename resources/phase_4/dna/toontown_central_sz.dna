@@ -413,7 +413,7 @@ group "toontownCentral" [
      ]
     ]
    ]
-   prop "prop_GS_tunnel_DNARoot" [
+   prop "linktunnel_gs_8000_DNARoot" [
     code [ "prop_GS_tunnel" ]
     pos [ 20.9205 172.683 3.24925 ]
     nhpr [ -150 -0.083787 0.0101321 ]
@@ -480,11 +480,6 @@ group "toontownCentral" [
      ]
     ]
    ]
-  ]
-  prop "prop_construction_sign_DNARoot" [
-   code [ "prop_construction_sign" ]
-   pos [ 28.96 158.14 3.125 ]
-   nhpr [ 32.01 0 0 ]
   ]
   node "buildings" [
    prop "prop_trolley_station_DNARoot" [
