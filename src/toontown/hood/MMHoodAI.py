@@ -2,6 +2,7 @@ from toontown.classicchars import DistributedMinnieAI
 from toontown.hood import HoodAI
 from toontown.safezone import DistributedTrolleyAI
 from toontown.toonbase import ToontownGlobals
+from toontown.safezone import DistributedMMPianoAI
 
 
 class MMHoodAI(HoodAI.HoodAI):
@@ -12,7 +13,7 @@ class MMHoodAI(HoodAI.HoodAI):
 
         self.trolley = None
         self.classicChar = None
-
+        self.piano = None
         self.startup()
 
     def startup(self):
@@ -23,6 +24,9 @@ class MMHoodAI(HoodAI.HoodAI):
         if simbase.config.GetBool('want-classic-chars', True):
             if simbase.config.GetBool('want-minnie', True):
                 self.createClassicChar()
+
+        self.piano = DistributedMMPianoAI.DistributedMMPianoAI(self.air)
+        self.piano.generateWithRequired(self.zoneId) 
 
     def createTrolley(self):
         self.trolley = DistributedTrolleyAI.DistributedTrolleyAI(self.air)

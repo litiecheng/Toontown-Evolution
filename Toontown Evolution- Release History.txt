@@ -22,3 +22,7 @@
 1. Silly Meter
 2. Bug fix for estate phone lockout, after using it
 3. Bug fix for Disney HTML code in the game window 
+
+1.3.1:
+1. Merry Go Round in Minnie's Melodyland
+2. random.choice for Tug of War
