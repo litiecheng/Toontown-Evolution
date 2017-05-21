@@ -13,16 +13,14 @@ class DistributedPhoneAI(DistributedFurnitureItemAI):
 
     def __init__(self, air, furnitureMgr, item):
         DistributedFurnitureItemAI.__init__(self, air, furnitureMgr, item)
-
+        self.initialScale = (0.8, 0.8, 0.8)
         self.avId = None
 
+    def setInitialScale(self, scale):
+        self.initialScale = scale
+    
     def getInitialScale(self):
-        return (0.8, 0.8, 0.8)
-
-    def setNewScale(self, sx, sy, sz):
-        if sx + sy + sz < 5:
-            return
-        self.sendUpdate('setInitialScale', [sx, sy, sz])
+        return self.initialScale
 
     def avatarEnter(self):
         avId = self.air.getAvatarIdFromSender()

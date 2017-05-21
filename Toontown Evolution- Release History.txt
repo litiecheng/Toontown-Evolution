@@ -17,3 +17,8 @@
 1.2.1:
 1. Racing
 2. Music Tempo now changes in Racing
+
+1.3.0:
+1. Silly Meter
+2. Bug fix for estate phone lockout, after using it
+3. Bug fix for Disney HTML code in the game window 
