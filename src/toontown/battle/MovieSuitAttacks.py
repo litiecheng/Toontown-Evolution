@@ -1592,7 +1592,7 @@ def doReOrg(attack):
     dmg = target['hp']
     damageDelay = 1.7
     attackDelay = 1.7
-    sprayEffect = BattleParticles.createParticleEffect(file='reorgSpray')
+    sprayEffect = BattleParticles.createParticleEffect(file='spinSpray')
     suitTrack = getSuitTrack(attack)
     partTrack = getPartTrack(sprayEffect, 1.0, 1.9, [sprayEffect, suit, 0])
     if dmg > 0:

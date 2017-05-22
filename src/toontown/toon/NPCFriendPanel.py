@@ -9,6 +9,38 @@ from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.toon import LaughingManGlobals
 
+def createNPCToonHead(NPCID, dimension = 0.5):
+    NPCInfo = NPCToons.NPCToonDict[NPCID]
+    dnaList = NPCInfo[2]
+    gender = NPCInfo[3]
+    if dnaList == 'r':
+        dnaList = NPCToons.getRandomDNA(NPCID, gender)
+    dna = ToonDNA.ToonDNA()
+    dna.newToonFromProperties(*dnaList)
+    head = ToonHead.ToonHead()
+    head.setupHead(dna, forGui=1)
+    fitGeometry(head, fFlip=1, dimension=dimension)
+    return head
+
+def fitGeometry(geom, fFlip = 0, dimension = 0.5):
+    p1 = Point3()
+    p2 = Point3()
+    geom.calcTightBounds(p1, p2)
+    if fFlip:
+        t = p1[0]
+        p1.setX(-p2[0])
+        p2.setX(-t)
+    d = p2 - p1
+    biggest = max(d[0], d[2])
+    s = dimension / biggest
+    mid = (p1 + d / 2.0) * s
+    geomXform = hidden.attachNewNode('geomXform')
+    for child in geom.getChildren():
+        child.reparentTo(geomXform)
+
+    geomXform.setPosHprScale(-mid[0], -mid[1] + 1, -mid[2], 180, 0, 0, s, s, s)
+    geomXform.reparentTo(geom)
+
 class NPCFriendPanel(DirectFrame):
     notify = DirectNotifyGlobal.directNotify.newCategory('NPCFriendPanel')
 
@@ -191,7 +223,7 @@ class NPCFriendCard(DirectFrame):
             self.front.show()
             self.back.hide()
             self.NPCName['text'] = TTLocalizer.NPCToonNames[NPCID]
-            self.NPCHead = self.createNPCToonHead(NPCID, dimension=self.NPCHeadDim)
+            self.NPCHead = createNPCToonHead(NPCID, dimension=self.NPCHeadDim)
             self.NPCHead.reparentTo(self.front)
             self.NPCHead.setZ(self.NPCHeadPosZ)
             track, level, hp, rarity = NPCToons.getNPCTrackLevelHpRarity(NPCID)
@@ -235,37 +267,3 @@ class NPCFriendCard(DirectFrame):
     def showBack(self):
         self.front.hide()
         self.back.show()
-
-    def createNPCToonHead(self, NPCID, dimension = 0.5):
-        NPCInfo = NPCToons.NPCToonDict[NPCID]
-        dnaList = NPCInfo[2]
-        gender = NPCInfo[3]
-        if dnaList == 'r':
-            dnaList = NPCToons.getRandomDNA(NPCID, gender)
-        dna = ToonDNA.ToonDNA()
-        dna.newToonFromProperties(*dnaList)
-        head = ToonHead.ToonHead()
-        head.setupHead(dna, forGui=1)
-        self.fitGeometry(head, fFlip=1, dimension=dimension)
-        if NPCID == 91917:
-            LaughingManGlobals.addHeadEffect(head, book=True)
-        return head
-
-    def fitGeometry(self, geom, fFlip = 0, dimension = 0.5):
-        p1 = Point3()
-        p2 = Point3()
-        geom.calcTightBounds(p1, p2)
-        if fFlip:
-            t = p1[0]
-            p1.setX(-p2[0])
-            p2.setX(-t)
-        d = p2 - p1
-        biggest = max(d[0], d[2])
-        s = dimension / biggest
-        mid = (p1 + d / 2.0) * s
-        geomXform = hidden.attachNewNode('geomXform')
-        for child in geom.getChildren():
-            child.reparentTo(geomXform)
-
-        geomXform.setPosHprScale(-mid[0], -mid[1] + 1, -mid[2], 180, 0, 0, s, s, s)
-        geomXform.reparentTo(geom)
