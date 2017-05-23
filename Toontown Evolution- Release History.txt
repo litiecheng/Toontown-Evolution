@@ -31,3 +31,7 @@
 1. SOS Head is shown when you choose an SOS Card
 2. Cog Panel GUI 
 3. ReOrg Cog Attack
+
+1.5.0:
+1. New XR Operating System for the Cogs
+2. Throw Book Cog Attack

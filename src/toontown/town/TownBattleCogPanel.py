@@ -74,10 +74,16 @@ class TownBattleCogPanel(DirectFrame):
         self.setLevelText(cog.getActualLevel(), cog.getSkeleRevives())
 
     def setLevelText(self, hp, revives = 0):
-        if revives > 0:
+        if revives == 1:
             self.healthText['text'] = TTLocalizer.DisguisePageCogLevel % str(hp) + TTLocalizer.SkeleRevivePostFix
+        elif revives == 2:
+            self.healthText['text'] = TTLocalizer.DisguisePageCogLevel % str(hp) + TTLocalizer.SkeleRevivePostFix2
+        elif revives == 3:
+            self.healthText['text'] = TTLocalizer.DisguisePageCogLevel % str(hp) + TTLocalizer.SkeleRevivePostFix3
+        elif revives == 4:
+            self.healthText['text'] = TTLocalizer.DisguisePageCogLevel % str(hp) + TTLocalizer.SkeleRevivePostFix4
         else:
-            self.healthText['text'] = TTLocalizer.DisguisePageCogLevel % str(hp)
+            self.healthText['text'] = TTLocalizer.DisguisePageCogLevel % str(hp) + TTLocalizer.SkeleRevivePreFix
 
     def updateHealthBar(self):
         condition = self.cog.healthCondition

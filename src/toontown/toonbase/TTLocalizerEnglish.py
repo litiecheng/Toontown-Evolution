@@ -182,9 +182,9 @@ TheCogs = 'The Cogs'
 ASkeleton = 'a Skelecog'
 Skeleton = 'Skelecog'
 SkeletonP = 'Skelecogs'
-Av2Cog = 'a Version 2.0 Cog'
-v2Cog = 'Version 2.0 Cog'
-v2CogP = 'Version 2.0 Cogs'
+Av2Cog = 'a XR Cog'
+v2Cog = 'XR Cog'
+v2CogP = 'XR Cogs'
 Foreman = 'Factory Foreman'
 ForemanP = 'Factory Foremen'
 AForeman = 'a Factory Foreman'
@@ -1818,7 +1818,7 @@ QuestDialogDict = {160: {GREETING: '',
          QUEST: 'Could you swing by..._where_'},
  12019: {GREETING: '',
          LEAVING: '',
-         QUEST: 'These Version 2.0 Cogs are very interesting.\x07Please go defeat another one.',
+         QUEST: 'These XR Cogs are very interesting.\x07Please go defeat another one.',
          INCOMPLETE_PROGRESS: 'Try looking in %s' % GlobalStreetNames[10000][-1],
          COMPLETE: 'Thanks!\x07Another disguise part coming right up.'},
  12020: {GREETING: '',
@@ -1907,7 +1907,11 @@ BossbotSkelP = 'Bossbot Skelecogs'
 LawbotSkelP = 'Lawbot Skelecogs'
 CashbotSkelP = 'Cashbot Skelecogs'
 SellbotSkelP = 'Sellbot Skelecogs'
-SkeleRevivePostFix = ' v2.0'
+SkeleRevivePostFix = 'XR Alpha'
+SkeleRevivePostFix2 = 'XR Beta'
+SkeleRevivePostFix3 = 'XR Gamma'
+SkeleRevivePostFix4 = 'XR Omega'
+SkeleRevivePreFix = 'XR'
 AvatarDetailPanelOK = lOK
 AvatarDetailPanelCancel = lCancel
 AvatarDetailPanelClose = lClose
@@ -5576,12 +5580,12 @@ WaiterInvasionBulletin2 = lToonHQ + ': The C.E.O. has fired all of his waiters!!
 WaiterInvasionBulletin3 = lToonHQ + ": The unemployed waiters are invading Toontown!!!"
 V2InvasionBegin1 = lToonHQ + ": Yikes!!! This isn't good, Toons!"
 V2InvasionBegin2 = lToonHQ + ': A major firmware update has been released to the Cogs!!!'
-V2InvasionBegin3 = lToonHQ + ': Version 2.0 Cogs have taken over Toontown!!!'
-V2InvasionEnd1 = lToonHQ + ': The version 2.0 Cog invasion has ended!!!'
+V2InvasionBegin3 = lToonHQ + ': XR Cogs have taken over Toontown!!!'
+V2InvasionEnd1 = lToonHQ + ': The XR Cog invasion has ended!!!'
 V2InvasionEnd2 = lToonHQ + ': The Toons have saved the day once again!!!'
 V2InvasionBulletin1 = lToonHQ + ': There is a Cog invasion in progress!!!'
 V2InvasionBulletin2 = lToonHQ + ': A major firmware update has been released to the Cogs!!!'
-V2InvasionBulletin3 = lToonHQ + ': Version 2.0 Cogs have taken over Toontown!!!'
+V2InvasionBulletin3 = lToonHQ + ': XR Cogs have taken over Toontown!!!'
 LeaderboardTitle = 'Toon Platoon'
 QuestScriptTutorialMickey_1 = 'Toontown has a new citizen! Do you have some extra gags?'
 QuestScriptTutorialMickey_2 = 'Sure, %s!'
