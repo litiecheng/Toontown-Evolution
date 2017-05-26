@@ -35,3 +35,6 @@
 1.5.0:
 1. New XR Operating System for the Cogs
 2. Throw Book Cog Attack
+
+1.5.1:
+1. Added support for XR Cogs in the Sellbot Factory
