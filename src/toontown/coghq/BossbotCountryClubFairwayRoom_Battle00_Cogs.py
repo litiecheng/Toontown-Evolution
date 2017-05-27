@@ -1,5 +1,6 @@
 from SpecImports import *
 from toontown.toonbase import ToontownGlobals
+import random
 CogParent = 110200
 BattleCellId = 0
 BattleCells = {BattleCellId: {'parentEntId': CogParent,
@@ -13,7 +14,7 @@ CogData = [{'parentEntId': CogParent,
   'behavior': 'stand',
   'path': None,
   'skeleton': 0,
-  'revives': 1},
+  'revives': random.choice([1, 2, 3, 4])},
  {'parentEntId': CogParent,
   'boss': 0,
   'level': ToontownGlobals.BossbotCountryClubCogLevel - 1,
@@ -22,7 +23,8 @@ CogData = [{'parentEntId': CogParent,
   'h': 180,
   'behavior': 'stand',
   'path': None,
-  'skeleton': 0},
+  'skeleton': 0,
+  'revives': random.choice([1, 2, 3, 4])},
  {'parentEntId': CogParent,
   'boss': 0,
   'level': ToontownGlobals.BossbotCountryClubCogLevel - 1,
@@ -31,7 +33,8 @@ CogData = [{'parentEntId': CogParent,
   'h': 180,
   'behavior': 'stand',
   'path': None,
-  'skeleton': 0},
+  'skeleton': 0,
+  'revives': random.choice([1, 2, 3, 4])},
  {'parentEntId': CogParent,
   'boss': 0,
   'level': ToontownGlobals.BossbotCountryClubCogLevel - 1,
@@ -40,5 +43,6 @@ CogData = [{'parentEntId': CogParent,
   'h': 180,
   'behavior': 'stand',
   'path': None,
-  'skeleton': 0}]
+  'skeleton': 0,
+  'revives': random.choice([1, 2, 3, 4])}]
 ReserveCogData = []
