@@ -383,6 +383,8 @@ class QuestPoster(DirectFrame):
                             icon = cogIcons.find('**/LegalIcon')
                         elif holder == 'm':
                             icon = cogIcons.find('**/MoneyIcon')
+                        elif holder == 'p':
+                            icon = cogIcons.find('**/BoardIcon')
                         rIconGeom = icon.copyTo(hidden)
                         rIconGeom.setColor(Suit.Suit.medallionColors[holder])
                         rIconGeomScale = 0.12
@@ -433,6 +435,8 @@ class QuestPoster(DirectFrame):
                 lIconGeom = loader.loadModel('phase_4/models/modules/suit_landmark_money')
             elif track == 's':
                 lIconGeom = loader.loadModel('phase_4/models/modules/suit_landmark_sales')
+            elif track == 'p':
+                lIconGeom = loader.loadModel('phase_4/models/modules/suit_landmark_paint')
             else:
                 bookModel = loader.loadModel('phase_3.5/models/gui/stickerbook_gui')
                 lIconGeom = bookModel.find('**/COG_building')
@@ -460,6 +464,8 @@ class QuestPoster(DirectFrame):
                 rIconGeom = loader.loadModel('phase_4/models/modules/suit_landmark_money')
             elif track == 's':
                 rIconGeom = loader.loadModel('phase_4/models/modules/suit_landmark_sales')
+            elif track == 'p':
+                rIconGeom = loader.loadModel('phase_4/models/modules/suit_landmark_paint')
             else:
                 bookModel = loader.loadModel('phase_3.5/models/gui/stickerbook_gui')
                 rIconGeom = bookModel.find('**/COG_building')
@@ -784,6 +790,8 @@ class QuestPoster(DirectFrame):
                     icon = cogIcons.find('**/LegalIcon')
                 elif dept == 'm':
                     icon = cogIcons.find('**/MoneyIcon')
+                elif dept == 'p':
+                    icon = cogIcons.find('**/BoardIcon')
                 lIconGeom = icon.copyTo(hidden)
                 lIconGeom.setColor(Suit.Suit.medallionColors[dept])
                 cogIcons.removeNode()
@@ -836,6 +844,8 @@ class QuestPoster(DirectFrame):
                     icon = cogIcons.find('**/LegalIcon')
                 elif dept == 'm':
                     icon = cogIcons.find('**/MoneyIcon')
+                elif dept == 'p':
+                    icon = cogIcons.find('**/BoardIcon')
                 lIconGeom = icon.copyTo(hidden)
                 lIconGeom.setColor(Suit.Suit.medallionColors[dept])
                 cogIcons.removeNode()

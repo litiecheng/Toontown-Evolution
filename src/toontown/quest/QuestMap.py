@@ -69,6 +69,7 @@ class QuestMap(DirectFrame):
         lIcon = icons.find('**/LegalIcon')
         mIcon = icons.find('**/MoneyIcon')
         sIcon = icons.find('**/SalesIcon')
+        pIcon = icons.find('**/BoardIcon')
         cogInfoTextColor = (0.2, 0.2, 0.2, 1)
         textPos = (1.2, -0.2)
         textScale = 0.8
@@ -80,6 +81,8 @@ class QuestMap(DirectFrame):
         self.mInfo.setPos(0.8, 0, 0.5)
         self.sInfo = DirectLabel(parent=self.cogInfoFrame, text_fg=cogInfoTextColor, text='', text_pos=textPos, text_scale=textScale, geom=sIcon, geom_pos=(-0.2, 0, 0), geom_scale=0.8, relief=None)
         self.sInfo.setPos(0.8, 0, -0.5)
+        self.pInfo = DirectLabel(parent=self.cogInfoFrame, text_fg=cogInfoTextColor, text='', text_pos=textPos, text_scale=textScale, geom=pIcon, geom_pos=(0, 0, 0), geom_scale=0.6, relief=None)
+        self.pInfo.setPos(3.2, 0, 0.5)
         icons.removeNode()
         return
 
@@ -91,6 +94,7 @@ class QuestMap(DirectFrame):
         self.lInfo['text'] = '%s%%' % currPercentage[1]
         self.mInfo['text'] = '%s%%' % currPercentage[2]
         self.sInfo['text'] = '%s%%' % currPercentage[3]
+        self.pInfo['text'] = '%s%%' % currPercentage[4]
         return
 
     def destroy(self):
@@ -182,9 +186,8 @@ class QuestMap(DirectFrame):
                 self.marker.setHpr(0, 0, -180 - self.av.getH())
         i = 0
         for buildingMarker in self.buildingMarkers:
-            if not buildingMarker.isEmpty():
-                buildingMarker.setScale((math.sin(task.time * 16.0 + i * math.pi / 3.0) + 1) * 0.005 + 0.04)
-                i += 1
+            buildingMarker.setScale((math.sin(task.time * 16.0 + i * math.pi / 3.0) + 1) * 0.005 + 0.04)
+            i = i + 1
 
         return Task.cont
 

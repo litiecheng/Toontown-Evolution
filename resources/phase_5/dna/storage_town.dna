@@ -55,7 +55,13 @@ hood_model "phase_4/models/modules/suit_landmark_money" [
 	store_node [ "suit_landmark" "suit_landmark_m4" "" ]
 	store_node [ "suit_landmark" "suit_landmark_m5" "" ]
 	]
-
+hood_model "phase_4/models/modules/suit_landmark_paint" [
+	store_node [ "suit_landmark" "suit_landmark_p1" "" ]
+	store_node [ "suit_landmark" "suit_landmark_p2" "" ]
+	store_node [ "suit_landmark" "suit_landmark_p3" "" ]
+	store_node [ "suit_landmark" "suit_landmark_p4" "" ]
+	store_node [ "suit_landmark" "suit_landmark_p5" "" ]
+	]
 hood_model "phase_4/models/modules/elevator" [
 	store_node [ "elevator" "elevator" "" ]
 	]

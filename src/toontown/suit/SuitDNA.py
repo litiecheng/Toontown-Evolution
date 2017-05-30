@@ -1,7 +1,7 @@
 import random
 from pandac.PandaModules import *
 from direct.directnotify.DirectNotifyGlobal import *
-from toontown.toonbase import TTLocalizer
+from toontown.toonbase import TTLocalizer, ToontownGlobals
 import random
 from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
@@ -38,7 +38,15 @@ suitHeadTypes = ['f',
  'ms',
  'tf',
  'm',
- 'mh']
+ 'mh',
+ 'mtm',
+ 'ps',
+ 'sol',
+ 'mis',
+ 'rr',
+ 'ad',
+ 'bm',
+ 'ml']
 suitATypes = ['ym',
  'hh',
  'tbc',
@@ -52,7 +60,12 @@ suitATypes = ['ym',
  'nd',
  'tf',
  'm',
- 'mh']
+ 'mh',
+ 'sol',
+ 'rr',
+ 'ad',
+ 'bm',
+ 'ml']
 suitBTypes = ['p',
  'ds',
  'b',
@@ -61,7 +74,9 @@ suitBTypes = ['p',
  'bc',
  'ls',
  'tm',
- 'ms']
+ 'ms',
+ 'ps',
+ 'mis']
 suitCTypes = ['f',
  'mm',
  'cr',
@@ -70,23 +85,48 @@ suitCTypes = ['f',
  'tw',
  'mb',
  'cc',
- 'gh']
+ 'gh',
+ 'mtm']
 suitDepts = ['c',
  'l',
  'm',
- 's']
+ 's',
+ 'p']
+suitDeptZones = [ToontownGlobals.BossbotHQ,
+ ToontownGlobals.LawbotHQ,
+ ToontownGlobals.CashbotHQ,
+ ToontownGlobals.SellbotHQ]
 suitDeptFullnames = {'c': TTLocalizer.Bossbot,
  'l': TTLocalizer.Lawbot,
  'm': TTLocalizer.Cashbot,
- 's': TTLocalizer.Sellbot}
+ 's': TTLocalizer.Sellbot,
+ 'p': TTLocalizer.Paintbot}
 suitDeptFullnamesP = {'c': TTLocalizer.BossbotP,
  'l': TTLocalizer.LawbotP,
  'm': TTLocalizer.CashbotP,
- 's': TTLocalizer.SellbotP}
+ 's': TTLocalizer.SellbotP,
+ 'p': TTLocalizer.PaintbotP}
+suitDeptFilenames = {'c': 'c',
+ 'l': 'l',
+ 'm': 'm',
+ 's': 's',
+ 'p': 'p'
+}
+suitDeptModelPaths = {'c': '**/CorpIcon',
+ 0: '**/CorpIcon',
+ 'l': '**/LegalIcon',
+ 1: '**/LegalIcon',
+ 'm': '**/MoneyIcon',
+ 2: '**/MoneyIcon',
+ 's': '**/SalesIcon',
+ 3: '**/SalesIcon',
+ 'p': '**/BoardIcon',
+ 4: '**/BoardIcon'}
 corpPolyColor = VBase4(0.95, 0.75, 0.75, 1.0)
 legalPolyColor = VBase4(0.75, 0.75, 0.95, 1.0)
 moneyPolyColor = VBase4(0.65, 0.95, 0.85, 1.0)
 salesPolyColor = VBase4(0.95, 0.75, 0.95, 1.0)
+paintPolyColor = VBase4(0.70, 0.80, 0.90, 1.0)
 suitsPerLevel = [1,
  1,
  1,
@@ -120,6 +160,8 @@ def getSuitDept(name):
         return suitDepts[2]
     elif index < suitsPerDept * 4:
         return suitDepts[3]
+    elif index < suitsPerDept * 5:
+        return suitDepts[4]
     else:
         print 'Unknown dept for suit name: ', name
         return None
@@ -148,24 +190,26 @@ def getSuitName(deptIndex, typeIndex):
 
 
 def getRandomSuitType(level, rng = random):
-    return random.randint(max(level - 4, 1), min(level, 8))
+    try:
+        returnval = random.randint(max(level - 4, 1), min(level, 8))
+    except:
+        returnval = 8
+
+    return returnval
 
 
 def getRandomSuitByDept(dept):
     deptNumber = suitDepts.index(dept)
     return suitHeadTypes[suitsPerDept * deptNumber + random.randint(0, 7)]
 
-
 def getRandomSuitByLevel(level):
     deptNumber = random.randint(0, 3)
     return suitHeadTypes[suitsPerDept * deptNumber + level]
-
 
 def getSuitsInDept(dept):
     start = dept * suitsPerDept
     end = start + suitsPerDept
     return suitHeadTypes[start:end]
-
 
 class SuitDNA(AvatarDNA.AvatarDNA):
 

@@ -586,7 +586,15 @@ suitIndex = {
 'ms' : 28,
 'tf' : 29,
 'm' : 30,
-'mh' : 31
+'mh' : 31,
+'mtm' : 32,
+'ps' : 33,
+'sol' : 34,
+'mis' : 35,
+'rr' : 36,
+'ad' : 37,
+'bm' : 38,
+'ml' : 39
 }
 BossCogRollSpeed = 7.5
 BossCogTurnSpeed = 20

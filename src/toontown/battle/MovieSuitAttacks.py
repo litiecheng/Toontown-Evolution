@@ -1,4 +1,5 @@
 from direct.directnotify import DirectNotifyGlobal
+from direct.directnotify import DirectNotifyGlobal
 from direct.interval.IntervalGlobal import *
 from direct.particles import ParticleEffect
 
@@ -234,7 +235,7 @@ def doSuitAttack(attack):
     elif name == SHRED:
         suitTrack = doShred(attack)
     elif name == SONG_AND_DANCE:
-        suitTrack = doDefault(attack)
+        suitTrack = doSongAndDance(attack)
     elif name == SPIN:
         suitTrack = doSpin(attack)
     elif name == SYNERGY:
@@ -3595,3 +3596,14 @@ def doPeckingOrder(attack):
     damageAnims.append(['cringe', 0.01, 0.43])
     toonTrack = getToonTrack(attack, damageDelay=4.2, splicedDamageAnims=damageAnims, dodgeDelay=2.8, dodgeAnimNames=['sidestep'], showMissedExtraTime=1.1)
     return Parallel(suitTrack, toonTrack, birdTracks)
+
+def doSongAndDance(attack):
+    suit = attack['suit']
+    battle = attack['battle']
+    tbcHead = suit.find('**/to_head')
+    for part in suit.getHeadParts():
+            part.reparentTo(tbcHead)
+    suitTrack = getSuitTrack(attack)
+    toonTrack = getToonTrack(attack, suitTrack.getDuration() - 1.8, ['cringe'], suitTrack.getDuration() - 1.8, ['applause'])
+    soundTrack = getSoundTrack('AA_heal_happydance.ogg', node=suit)
+    return Parallel(suitTrack, toonTrack, soundTrack)

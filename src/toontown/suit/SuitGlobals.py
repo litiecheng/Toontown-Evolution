@@ -50,5 +50,14 @@ suitProperties = {'f': (4.0 / cSize, SuitDNA.corpPolyColor, ['flunky', 'glasses'
                   'tf': (5.25 / aSize, SuitDNA.salesPolyColor, ['twoface'], '', 6.95),
                   'm': (5.75 / aSize, SuitDNA.salesPolyColor, ['twoface'], 'mingler.jpg', 7.61),
                   'mh': (7.0 / aSize, SuitDNA.salesPolyColor, ['yesman'], '', 8.95),
-                  }
 
+                  # Paintbots
+                  'mtm': (4.0 / cSize, SuitDNA.paintPolyColor, ['tightwad'], 'molten_man.jpg', 6.0),
+                  'ps': (4.375 / bSize, SuitDNA.paintPolyColor, ['movershaker'], 'pink_smasher.jpg', 6.37),
+                  'sol': (4.60 / aSize, SuitDNA.paintPolyColor, ['twoface'], 'soul_crusher.jpg', 6.7),
+                  'mis': (5.25 / bSize, SuitDNA.paintPolyColor, ['ambulancechaser'], 'misery_spreader.jpg', 7.5),
+                  'rr': (5.75 / aSize, SuitDNA.paintPolyColor, ['yesman'], 'rageinator.jpg', 8.0),
+                  'ad': (6.0 / aSize, SuitDNA.paintPolyColor, ['yesman'], 'advertiser.jpg', 8.5),
+                  'bm': (6.5 / aSize, SuitDNA.paintPolyColor, ['bigwig'], 'book_manager.jpg', 8.80),
+                  'ml': (7.0 / aSize, SuitDNA.paintPolyColor, ['yesman'], 'master_salesman.jpg', 9.10),
+                  }

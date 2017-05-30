@@ -181,7 +181,8 @@ class Quest:
      'c',
      'l',
      'm',
-     's']
+     's',
+     'p']
     _factoryTypes = [Any,
      FT_FullSuit,
      FT_Leg,
@@ -557,15 +558,18 @@ class CogTrackQuest(CogQuest):
     trackCodes = ['c',
      'l',
      'm',
-     's']
+     's',
+     'p']
     trackNamesS = [TTLocalizer.BossbotS,
      TTLocalizer.LawbotS,
      TTLocalizer.CashbotS,
-     TTLocalizer.SellbotS]
+     TTLocalizer.SellbotS,
+     TTLocalizer.PaintbotS]
     trackNamesP = [TTLocalizer.BossbotP,
      TTLocalizer.LawbotP,
      TTLocalizer.CashbotP,
-     TTLocalizer.SellbotP]
+     TTLocalizer.SellbotP,
+     TTLocalizer.PaintbotP]
 
     def __init__(self, id, quest):
         CogQuest.__init__(self, id, quest)
@@ -1009,11 +1013,13 @@ class BuildingQuest(CogQuest):
     trackCodes = ['c',
      'l',
      'm',
-     's']
+     's',
+     'p']
     trackNames = [TTLocalizer.Bossbot,
      TTLocalizer.Lawbot,
      TTLocalizer.Cashbot,
-     TTLocalizer.Sellbot]
+     TTLocalizer.Sellbot,
+     TTLocalizer.Paintbot]
 
     def __init__(self, id, quest):
         CogQuest.__init__(self, id, quest)
@@ -1646,6 +1652,8 @@ class RecoverItemQuest(LocationBasedQuest):
                 holderName = TTLocalizer.CashbotP
             elif holder == 'l':
                 holderName = TTLocalizer.LawbotP
+            elif holder == 'p':
+                holderName = TTLocalizer.PaintbotP
         item = self.getItem()
         num = self.getNumItems()
         if num == 1:
@@ -1705,6 +1713,8 @@ class RecoverItemQuest(LocationBasedQuest):
                 holderName = TTLocalizer.CashbotP
             elif holder == 'l':
                 holderName = TTLocalizer.LawbotP
+            elif holder == 'p':
+                holderName = TTLocalizer.PaintbotP
         if num == 1:
             itemName = ItemDict[item][2] + ItemDict[item][0]
         else:

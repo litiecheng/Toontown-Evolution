@@ -648,7 +648,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             'c': 0,
             'l': 0,
             'm': 0,
-            's': 0
+            's': 0,
+            'p': 0
         }
         for sp in self.air.suitPlanners.values():
             sp.countNumBuildingsPerTrack(numPerTrack)
@@ -656,6 +657,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             numPerTrack['l'] += sp.pendingBuildingTracks.count('l')
             numPerTrack['m'] += sp.pendingBuildingTracks.count('m')
             numPerTrack['s'] += sp.pendingBuildingTracks.count('s')
+            numPerTrack['p'] += sp.pendingBuildingTracks.count('p')
         numPerHeight = {
             0: 0,
             1: 0,

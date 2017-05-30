@@ -41,3 +41,9 @@
 
 1.5.2:
 1. Added support for XR Cogs in the Bossbot Country Club
+
+1.6.0:
+1. Added support for XR Cogs in the Cashbot Mint
+2. Added support for XR Cogs in the Lawbot Office
+3. Song and Dance Cog Attack
+4. Paintbots have invaded Toontown
