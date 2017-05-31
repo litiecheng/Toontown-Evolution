@@ -47,3 +47,7 @@
 2. Added support for XR Cogs in the Lawbot Office
 3. Song and Dance Cog Attack
 4. Paintbots have invaded Toontown
+
+1.6.1:
+1. Ability to make Black and White toons in Make A Toon
+2. Text fixes in TTLocalizerEnglish
