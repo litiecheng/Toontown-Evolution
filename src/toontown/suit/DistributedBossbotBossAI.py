@@ -917,10 +917,10 @@ class DistributedBossbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
         return self.moveAttackAllowed
 
 
-@magicWord(category=CATEGORY_ADMINISTRATOR)
-def skipCEO():
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str])
+def skipCEO(battle='next'):
     """
-    Skips to the final round of the CEO.
+    Skips to the indicated round of the CEO.
     """
     invoker = spellbook.getInvoker()
     boss = None
@@ -931,11 +931,50 @@ def skipCEO():
                 break
     if not boss:
         return "You aren't in a CEO!"
-    if boss.state in ('PrepareBattleThree', 'BattleThree'):
-        return "You can't skip this round."
-    boss.exitIntroduction()
-    boss.b_setState('PrepareBattleThree')
 
+    battle = battle.lower()
+
+    if battle == 'two':
+        if boss.state in ('PrepareBattleFour', 'BattleFour', 'PrepareBattleThree', 'BattleThree', 'PrepareBattleTwo', 'BattleTwo'):
+            return "You can not return to previous rounds!"
+        else:
+            boss.exitIntroduction()
+            boss.b_setState('PrepareBattleTwo')
+            return "Skipping to second round..."
+
+    if battle == 'three':
+        if boss.state in ('PrepareBattleFour', 'BattleFour', 'PrepareBattleThree', 'BattleThree'):
+            return "You can not return to previous rounds!"
+        else:
+            boss.exitIntroduction()
+            boss.b_setState('PrepareBattleThree')
+            return "Skipping to third round..."
+
+    if battle == 'four':
+        if boss.state in ('PrepareBattleFour', 'BattleFour'):
+            return "You can not return to previous rounds!"
+        else:
+            boss.exitIntroduction()
+            boss.b_setState('PrepareBattleFour')
+            return "Skipping to last round..."
+
+    if battle == 'next':
+        if boss.state in ('PrepareBattleOne', 'BattleOne'):
+            boss.exitIntroduction()
+            boss.b_setState('PrepareBattleTwo')
+            return "Skipping current round..."
+        elif boss.state in ('PrepareBattleTwo', 'BattleTwo'):
+            boss.exitIntroduction()
+            boss.b_setState('PrepareBattleThree')
+            return "Skipping current round..."
+        elif boss.state in ('PrepareBattleThree', 'BattleThree'):
+            boss.exitIntroduction()
+            boss.b_setState('PrepareBattleFour')
+            return "Skipping current round..."
+        elif boss.state in ('PrepareBattleFour', 'BattleFour'):
+            boss.exitIntroduction()
+            boss.b_setState('Victory')
+            return "Skipping final round..."
 
 @magicWord(category=CATEGORY_ADMINISTRATOR)
 def killCEO():

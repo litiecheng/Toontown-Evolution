@@ -183,7 +183,6 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.gmNameTagString = ''
         self.achievements = []
         self.canEarnAchievements = False
-        self.promotionStatus = [0, 0, 0, 0]
         self.buffs = []
 
     def disable(self):
@@ -963,9 +962,6 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
                 self.putOnSuit(cog)
             else:
                 self.putOnSuit(index, rental=True)
-
-    def setPromotionStatus(self, status):
-        self.promotionStatus = status
 
     def isCog(self):
         if self.cogIndex == -1:
@@ -2684,12 +2680,3 @@ def zone(zoneId):
     """
     base.cr.sendSetZoneMsg(zoneId, [zoneId])
     return 'You have been moved to zone %d.' % zoneId
-
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
-def promote(deptIndex):
-    """
-    sends a request to promote the invoker's [deptIndex] Cog disguise.
-    """
-    invoker = spellbook.getInvoker()
-    invoker.sendUpdate('requestPromotion', [deptIndex])
-    return 'Your promotion request has been sent.'

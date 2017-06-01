@@ -51,3 +51,8 @@
 1.6.1:
 1. Ability to make Black and White toons in Make A Toon
 2. Text fixes in TTLocalizerEnglish
+
+1.6.2:
+1. Code fixes for Cog Disguises
+2. CEO on Golf Kart
+3. Code fixes for skipCEO command

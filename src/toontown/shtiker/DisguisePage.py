@@ -144,19 +144,6 @@ class DisguisePage(ShtikerPage.ShtikerPage):
         upButton = self.buttonModels.find('**//InventoryButtonUp')
         downButton = self.buttonModels.find('**/InventoryButtonDown')
         rolloverButton = self.buttonModels.find('**/InventoryButtonRollover')
-        self.promoteButton = DirectButton(
-            parent=self.frame, relief=None, text='Promote',
-            text_fg=(0.9, 0.9, 0.9, 1), text_pos=(0, -0.2),
-            text_font=ToontownGlobals.getSuitFont(),
-            text_scale=0.6, image=(upButton, downButton, rolloverButton),
-            image_color=(0.5, 0.5, 0.5, 1), image_scale=(20, 1, 11),
-            pos=(0.94, 0, -1.125), scale=0.125,
-            command=self.sendPromotionRequest, extraArgs=[3])
-        self.promoteButton.hide()
-        if base.localAvatar.promotionStatus[3] == ToontownGlobals.PendingPromotion:
-            self.promoteButton.show()
-        if base.localAvatar.cogLevels[3] == ToontownGlobals.MaxCogSuitLevel:
-            self.promoteButton['state'] = DGG.DISABLED
         self.frame.hide()
         self.activeTab = 3
         self.updatePage()
@@ -236,7 +223,6 @@ class DisguisePage(ShtikerPage.ShtikerPage):
             self.meterFaceHalf2.setR(180 * (progress / 0.5))
 
     def doTab(self, index):
-        self.promoteButton.hide()
         self.activeTab = index
         self.tabs[index].reparentTo(self.pageFrame)
         for i in xrange(len(self.tabs)):
@@ -270,17 +256,3 @@ class DisguisePage(ShtikerPage.ShtikerPage):
         self.updatePartsDisplay(index, numParts, numPartsRequired)
         self.updateMeritBar(index)
         self.cogPartRatio['text'] = '%d/%d' % (CogDisguiseGlobals.getTotalParts(numParts), numPartsRequired)
-        if base.localAvatar.promotionStatus[index] == ToontownGlobals.PendingPromotion:
-            self.promoteButton['extraArgs'] = [index]
-            if base.localAvatar.cogLevels[index] == ToontownGlobals.MaxCogSuitLevel:
-                self.promoteButton['state'] = DGG.DISABLED
-            else:
-                self.promoteButton['state'] = DGG.NORMAL
-            self.promoteButton.show()
-
-    def sendPromotionRequest(self, dept):
-        self.promoteButton.hide()
-        base.playSfx(self.promotionSfx)
-        base.localAvatar.promotionStatus[dept] = 0
-        base.localAvatar.sendUpdate('requestPromotion', [dept])
-        self.updatePage()

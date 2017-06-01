@@ -99,7 +99,6 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         (base.cTrav.addCollider(self.closeBubbleNodePath, self.closeHandler),)
         self.accept('closeEnter', self.closeEnter)
         self.accept('closeExit', self.closeExit)
-        self.treads = self.find('**/treads')
         demotedCeo = Suit.Suit()
         demotedCeo.dna = SuitDNA.SuitDNA()
         demotedCeo.dna.newSuit('f')
@@ -154,6 +153,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.notify.debug('----- loadEnvironment')
         DistributedBossCog.DistributedBossCog.loadEnvironment(self)
         self.geom = loader.loadModel('phase_12/models/bossbotHQ/BanquetInterior_1')
+ 
         self.elevatorEntrance = self.geom.find('**/elevator_origin')
         elevatorModel = loader.loadModel('phase_12/models/bossbotHQ/BB_Inside_Elevator')
         if not elevatorModel:
@@ -161,6 +161,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         elevatorModel.reparentTo(self.elevatorEntrance)
         self.setupElevator(elevatorModel)
         self.banquetDoor = self.geom.find('**/door3')
+ 
         plane = CollisionPlane(Plane(Vec3(0, 0, 1), Point3(0, 0, -50)))
         planeNode = CollisionNode('dropPlane')
         planeNode.addSolid(plane)
@@ -843,19 +844,11 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
     def __talkAboutPromotion(self, speech):
         if self.prevCogSuitLevel < ToontownGlobals.MaxCogSuitLevel:
-            deptIndex = CogDisguiseGlobals.dept2deptIndex(self.style.dept)
-            cogLevels = base.localAvatar.getCogLevels()
-            newCogSuitLevel = cogLevels[deptIndex]
-            cogTypes = base.localAvatar.getCogTypes()
-            maxCogSuitLevel = (SuitDNA.levelsPerSuit-1) + cogTypes[deptIndex]
-            if self.prevCogSuitLevel != maxCogSuitLevel:
-                speech += TTLocalizer.BossbotRTLevelPromotion
-            if newCogSuitLevel == maxCogSuitLevel:
-                if newCogSuitLevel != ToontownGlobals.MaxCogSuitLevel:
-                    suitIndex = (SuitDNA.suitsPerDept*deptIndex) + cogTypes[deptIndex]
-                    cogTypeStr = SuitDNA.suitHeadTypes[suitIndex]
-                    cogName = SuitBattleGlobals.SuitAttributes[cogTypeStr]['name']
-                    speech += TTLocalizer.BossbotRTSuitPromotion % cogName
+            newCogSuitLevel = localAvatar.getCogLevels()[CogDisguiseGlobals.dept2deptIndex(self.style.dept)]
+            if newCogSuitLevel == ToontownGlobals.MaxCogSuitLevel:
+                speech += TTLocalizer.BossbotRTLastPromotion % (ToontownGlobals.MaxCogSuitLevel + 1)
+            if newCogSuitLevel in ToontownGlobals.CogSuitHPLevels:
+                speech += TTLocalizer.BossbotRTHPBoost
         else:
             speech += TTLocalizer.BossbotRTMaxed % (ToontownGlobals.MaxCogSuitLevel + 1)
         return speech
@@ -1049,7 +1042,6 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.speedRecoverRate = recoverRate
         self.speedRecoverStartTime = recoverStartTime
         speedFraction = max(1 - speedDamage / self.maxSpeedDamage, 0)
-        self.treads.setColorScale(1, speedFraction, speedFraction, 1)
         taskName = 'RecoverSpeedDamage'
         taskMgr.remove(taskName)
         if self.speedRecoverRate:
@@ -1067,7 +1059,6 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
     def __recoverSpeedDamage(self, task):
         speedDamage = self.getSpeedDamage()
         speedFraction = max(1 - speedDamage / self.maxSpeedDamage, 0)
-        self.treads.setColorScale(1, speedFraction, speedFraction, 1)
         return task.cont
 
     def moveBossToPoint(self, fromPos, fromHpr, toPos, toHpr, reverse):
@@ -1102,8 +1093,11 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.fromPos = fromPos
         self.dirVector = self.toPos - self.fromPos
         self.dirVector.normalize()
-        track = Sequence(Func(self.setPos, fromPos), Func(self.headsUp, toPos), Parallel(self.hprInterval(turnTime, toHpr, fromHpr), self.rollLeftTreads(turnTime, leftRate), self.rollRightTreads(turnTime, -leftRate)), Func(self.startMoveTask))
+        track = Sequence(Func(self.setPos, fromPos), Func(self.headsUp, toPos), Parallel(self.hprInterval(turnTime, toHpr, fromHpr)), Func(self.startMoveTask))
         return (track, toHpr)
+   
+    def getCurTurnSpeed(self):
+         return (track, toHpr)
 
     def getCurTurnSpeed(self):
         result = ToontownGlobals.BossbotTurnSpeedMax - (ToontownGlobals.BossbotTurnSpeedMax - ToontownGlobals.BossbotTurnSpeedMin) * self.getFractionalSpeedDamage()
@@ -1134,8 +1128,6 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
         self.treadsLeftPos += dt * self.getCurTreadSpeed()
         self.treadsRightPos += dt * self.getCurTreadSpeed()
-        rollTexMatrix(self.treadsLeftPos, self.treadsLeft)
-        rollTexMatrix(self.treadsRightPos, self.treadsRight)
         if distanceTravelledThisFrame >= distanceLeft:
             self.setPos(self.toPos)
             self.signalAtTable()
