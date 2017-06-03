@@ -56,3 +56,6 @@
 1. Code fixes for Cog Disguises
 2. CEO on Golf Kart
 3. Code fixes for skipCEO command
+
+1.6.3:
+1. Bug fix for Inventory Page
