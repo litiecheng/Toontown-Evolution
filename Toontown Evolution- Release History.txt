@@ -62,3 +62,10 @@
 
 1.6.4:
 1. Acorn Acres Teleport Access
+
+1.7.0:
+1. New Toon Colors
+2. Animated Street Props
+3. Bug Fix for Cog Battles
+4. Silly Surges for Cog Battles
+5. Added XR Delta Support for the Cogs

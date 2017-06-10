@@ -82,6 +82,7 @@ lMinniesMelodyland = "Minnie's Melodyland"
 lToontownCentral = 'Toontown Central'
 lToonHQ = 'Toon HQ'
 lSellbotHQ = 'Sellbot HQ'
+lPaintbotHQ = 'Paintbot HQ'
 lGoofySpeedway = 'Goofy Speedway'
 lOutdoorZone = "Chip 'n Dale's Acorn Acres"
 lGolfZone = "Chip 'n Dale's MiniGolf"
@@ -131,7 +132,11 @@ GlobalStreetNames = {20000: ('to', 'on', 'Tutorial Terrace'),
  13300: ('to the', 'in the', 'Lawbot A Office'),
  13400: ('to the', 'in the', 'Lawbot B Office'),
  13500: ('to the', 'in the', 'Lawbot C Office'),
- 13600: ('to the', 'in the', 'Lawbot D Office')}
+ 13600: ('to the', 'in the', 'Lawbot D Office'),
+ 14000: ('to the', 'in the', 'Paintbot HQ Courtyard'),
+ 14100: ('to the', 'in the', 'Paintbot HQ Lobby'),
+ 14200: ('to the', 'in the', '???'),
+ 14500: ('to the', 'in the', '???')}
 DonaldsDock = ('to', 'in', lDonaldsDock)
 ToontownCentral = ('to', 'in', lToontownCentral)
 TheBrrrgh = ('to', 'in', lTheBrrrgh)
@@ -145,6 +150,7 @@ BossbotHQ = ('to', 'in', 'Bossbot HQ')
 SellbotHQ = ('to', 'in', 'Sellbot HQ')
 CashbotHQ = ('to', 'in', 'Cashbot HQ')
 LawbotHQ = ('to', 'in', 'Lawbot HQ')
+PaintbotHQ = ('to', 'in', 'Paintbot HQ')
 Tutorial = ('to the', 'in the', 'Toon-torial')
 MyEstate = ('to', 'in', 'your house')
 WelcomeValley = ('to', 'in', 'Welcome Valley')
@@ -1915,7 +1921,8 @@ PaintbotSkelP = 'Paintbot Skelecogs'
 SkeleRevivePostFix = 'XR Alpha'
 SkeleRevivePostFix2 = 'XR Beta'
 SkeleRevivePostFix3 = 'XR Gamma'
-SkeleRevivePostFix4 = 'XR Omega'
+SkeleRevivePostFix4 = 'XR Delta'
+SkeleRevivePostFix5 = 'XR Omega'
 SkeleRevivePreFix = 'XR'
 AvatarDetailPanelOK = lOK
 AvatarDetailPanelCancel = lCancel
@@ -5538,7 +5545,17 @@ NumToColor = ['White',
  'Lavender',
  'Pink',
  'Plum',
- 'Black']
+ 'Black',
+ 'Mountain Green',
+ 'Icy Blue',
+ 'Desert Sand',
+ 'Mint',
+ 'Charcoal',
+ 'Hot Pink',
+ 'Honey Mustard',
+ 'Gray',
+ 'Neon Orange',
+ 'Sapphire']
 AnimalToSpecies = {'dog': 'Dog',
  'cat': 'Cat',
  'mouse': 'Mouse',
@@ -9849,7 +9866,8 @@ InteractivePropTrackBonusTerms = {0: 'Super Toon-Up!',
  3: '',
  4: 'Super Throw!',
  5: 'Super Squirt!',
- 6: ''}
+ 6: '',
+ 7: ''}
 PlayingCardUnknown = 'Card Name is unknown'
 YinTitle = 'Are you absolutely sure?'
 YinNotCat = 'Sorry, I only make cats black.'

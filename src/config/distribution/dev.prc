@@ -8,7 +8,7 @@ audio-library-name p3openal_audio
 model-path ../resources
 
 # Server:
-server-version 1.6.4
+server-version 1.7.0
 shard-low-pop 25
 shard-mid-pop 50
 accountdb-type developer

@@ -273,12 +273,18 @@ class RewardPanel(DirectFrame):
 
     def incrementMerits(self, toon, dept, newValue, totalMerits):
         meritBar = self.meritBars[dept]
-        promoStatus = toon.promotionStatus[dept]
+        oldValue = meritBar['value']
         if totalMerits:
             newValue = min(totalMerits, newValue)
             meritBar['range'] = totalMerits
             meritBar['value'] = newValue
-            if promoStatus != ToontownGlobals.PendingPromotion:
+            if newValue == totalMerits:
+                meritBar['text'] = TTLocalizer.RewardPanelMeritAlert
+                meritBar['barColor'] = (DisguisePage.DeptColors[dept][0],
+                 DisguisePage.DeptColors[dept][1],
+                 DisguisePage.DeptColors[dept][2],
+                 1)
+            else:
                 meritBar['text'] = '%s/%s %s' % (newValue, totalMerits, TTLocalizer.RewardPanelMeritBarLabels[dept])
 
     def resetMeritBarColor(self, dept):
