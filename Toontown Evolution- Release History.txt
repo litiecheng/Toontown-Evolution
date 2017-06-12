@@ -69,3 +69,7 @@
 3. Bug Fix for Cog Battles
 4. Silly Surges for Cog Battles
 5. Added XR Delta Support for the Cogs
+
+1.7.1:
+1. New Toon Colors 
+2. Upgraded Astron
