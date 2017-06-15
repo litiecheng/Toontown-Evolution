@@ -73,3 +73,6 @@
 1.7.1:
 1. New Toon Colors 
 2. Upgraded Astron
+
+1.8.0:
+1. Classic Characters from Toontown Online 
