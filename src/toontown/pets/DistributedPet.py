@@ -42,6 +42,7 @@ class DistributedPet(DistributedSmoothNode.DistributedSmoothNode, Pet.Pet, PetBa
         self.__generateDistMoodFuncs()
         self.trickAptitudes = []
         self.avDelayDelete = None
+        self.DISLid = 0
         return
 
     def generate(self):
@@ -488,3 +489,7 @@ class DistributedPet(DistributedSmoothNode.DistributedSmoothNode, Pet.Pet, PetBa
 
     def setTrickAptitudes(self, aptitudes):
         self.trickAptitudes = aptitudes
+
+    def setDISLid(self, id):
+        self.DISLid = id
+ 

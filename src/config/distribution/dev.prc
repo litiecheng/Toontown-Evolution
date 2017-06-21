@@ -8,7 +8,7 @@ audio-library-name p3openal_audio
 model-path ../resources
 
 # Server:
-server-version 1.8.1
+server-version 1.9.0
 shard-low-pop 25
 shard-mid-pop 50
 accountdb-type developer
@@ -26,7 +26,7 @@ dc-file astron/dclass/toon.dc
 dc-file astron/dclass/otp.dc
 
 # Core features:
-want-pets #f
+want-pets #t
 want-parties #f
 want-cogdominiums #f
 want-achievements #f

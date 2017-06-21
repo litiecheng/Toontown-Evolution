@@ -42,7 +42,7 @@ class EstateManager(DistributedObject.DistributedObject):
     def generate(self):
         self.notify.debug('BASE: generate')
         DistributedObject.DistributedObject.generate(self)
-        base.cr.estateMgr = self
+        base.cr.estateManager = self
         self.accept('getLocalEstateZone', self.getLocalEstateZone)
         self.announceGenerateName = self.uniqueName('generate')
 

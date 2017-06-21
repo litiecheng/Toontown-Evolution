@@ -18,6 +18,7 @@ from direct.task.TaskManagerGlobal import *
 from otp.otpbase import BackupManager
 from pandac.PandaModules import *
 
+from toontown.pets import PetConstants
 
 class AIBase:
     notify = directNotify.newCategory('AIBase')
@@ -70,14 +71,12 @@ class AIBase:
         wantFakeTextures = self.config.GetBool('want-fake-textures-ai', defaultValue)
         if wantFakeTextures:
             loadPrcFileData('aibase', 'textures-header-only 1')
-        self.wantPets = self.config.GetBool('want-pets', 1)
-        if self.wantPets:
-            from toontown.pets import PetConstants
-            self.petMoodTimescale = self.config.GetFloat('pet-mood-timescale', 1.0)
-            self.petMoodDriftPeriod = self.config.GetFloat('pet-mood-drift-period', PetConstants.MoodDriftPeriod)
-            self.petThinkPeriod = self.config.GetFloat('pet-think-period', PetConstants.ThinkPeriod)
-            self.petMovePeriod = self.config.GetFloat('pet-move-period', PetConstants.MovePeriod)
-            self.petPosBroadcastPeriod = self.config.GetFloat('pet-pos-broadcast-period', PetConstants.PosBroadcastPeriod)
+        
+        self.petMoodTimescale = self.config.GetFloat('pet-mood-timescale', 1.0)
+        self.petMoodDriftPeriod = self.config.GetFloat('pet-mood-drift-period', PetConstants.MoodDriftPeriod)
+        self.petThinkPeriod = self.config.GetFloat('pet-think-period', PetConstants.ThinkPeriod)
+        self.petMovePeriod = self.config.GetFloat('pet-move-period', PetConstants.MovePeriod)
+        self.petPosBroadcastPeriod = self.config.GetFloat('pet-pos-broadcast-period', PetConstants.PosBroadcastPeriod)
         self.wantBingo = self.config.GetBool('want-fish-bingo', 1)
         self.wantKarts = self.config.GetBool('wantKarts', 1)
         self.newDBRequestGen = self.config.GetBool('new-database-request-generate', 1)

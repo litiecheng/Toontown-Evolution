@@ -233,7 +233,7 @@ class CatalogItemList:
 
     def getList(self):
         return self.__list
-
+ 
     def output(self, store = -1):
         if self.__list == None:
             self.__decodeList()
@@ -242,15 +242,3 @@ class CatalogItemList:
             inner += ', %s' % item.output(store)
 
         return 'CatalogItemList([%s])' % inner[2:]
-
-    def removeDuplicates(self, flags):
-        if not self.__list:
-            self.generateList()
-
-        found = False
-        for item in self.__list:
-            if item.getFlags() == flags:
-                if found:
-                    self.__list.remove(item)
-                    continue
-                found = True

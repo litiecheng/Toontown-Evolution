@@ -162,7 +162,6 @@ class ToonBase(OTPBase.OTPBase):
         self.accept('PandaPaused', self.disableAllAudio)
         self.accept('PandaRestarted', self.enableAllAudio)
         self.friendMode = self.config.GetBool('switchboard-friends', 0)
-        self.wantPets = self.config.GetBool('want-pets', 1)
         self.wantBingo = self.config.GetBool('want-fish-bingo', 1)
         self.wantKarts = self.config.GetBool('want-karts', 1)
         self.wantNewSpecies = self.config.GetBool('want-new-species', 0)
@@ -242,8 +241,6 @@ class ToonBase(OTPBase.OTPBase):
 
         self.filters = CommonFilters(self.win, self.cam)
 
-        # Free black/white Toons:
-        self.wantYinYang = config.GetBool('want-yin-yang', False)
         self.wantNews = settings.get('want-News', True)
         self.wantCustomControls = settings.get('want-Custom-Controls', False)
 

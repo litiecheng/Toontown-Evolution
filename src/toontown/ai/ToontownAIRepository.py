@@ -18,7 +18,6 @@ from toontown.ai.QuestManagerAI import QuestManagerAI
 from toontown.ai import BankManagerAI
 from toontown.building.DistributedTrophyMgrAI import DistributedTrophyMgrAI
 from toontown.catalog.CatalogManagerAI import CatalogManagerAI
-from toontown.catalog.PopularItemManagerAI import PopularItemManagerAI
 from toontown.coghq import CountryClubManagerAI
 from toontown.coghq import FactoryManagerAI
 from toontown.coghq import LawOfficeManagerAI
@@ -84,14 +83,12 @@ class ToontownAIRepository(ToontownInternalRepository):
 
         self.wantFishing = self.config.GetBool('want-fishing', True)
         self.wantHousing = self.config.GetBool('want-housing', True)
-        self.wantPets = self.config.GetBool('want-pets', True)
         self.wantParties = self.config.GetBool('want-parties', True)
         self.wantCogbuildings = self.config.GetBool('want-cogbuildings', True)
         self.wantCogdominiums = self.config.GetBool('want-cogdominiums', True)
         self.doLiveUpdates = self.config.GetBool('want-live-updates', False)
         self.wantTrackClsends = self.config.GetBool('want-track-clsends', False)
         self.wantAchievements = self.config.GetBool('want-achievements', True)
-        self.wantYinYang = self.config.GetBool('want-yin-yang', False)
         self.baseXpMultiplier = self.config.GetFloat('base-xp-multiplier', 1.0)
         self.wantHalloween = self.config.GetBool('want-halloween', False)
         self.wantChristmas = self.config.GetBool('want-christmas', False)
@@ -130,11 +127,9 @@ class ToontownAIRepository(ToontownInternalRepository):
             self.estateManager.generateWithRequired(2)
             self.catalogManager = CatalogManagerAI(self)
             self.catalogManager.generateWithRequired(2)
-            self.popularItemManager = PopularItemManagerAI(self)
             self.deliveryManager = self.generateGlobalObject(
                 OTP_DO_ID_TOONTOWN_DELIVERY_MANAGER, 'DistributedDeliveryManager')
-        if self.wantPets:
-            self.petMgr = PetManagerAI(self)
+        self.petMgr = PetManagerAI(self)
         if self.wantParties:
             self.partyManager = DistributedPartyManagerAI(self)
             self.partyManager.generateWithRequired(2)

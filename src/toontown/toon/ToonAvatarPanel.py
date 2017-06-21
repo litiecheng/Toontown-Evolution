@@ -563,7 +563,7 @@ class ToonAvatarPanel(AvatarPanelBase.AvatarPanelBase):
          TTLocalizer.AvatarPanelPet,
          ''), text_fg=self.text2Color, text_shadow=(0, 0, 0, 1), text_scale=0.325, text_pos=(-1.3, 0.05), text_align=TextNode.ACenter, command=self.__handleToPet)
         self.petButton.setScale(0.15)
-        if not (base.wantPets and avatar.hasPet()):
+        if not avatar.hasPet():
             self.petButton['state'] = DGG.DISABLED
             self.petButton.hide()
         petGui.removeNode()

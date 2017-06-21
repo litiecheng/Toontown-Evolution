@@ -150,6 +150,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             self.shovelRelatedDoId = 0
             self.shovelAbility = ''
             self.plantToWater = 0
+            self.petId = 0
             self.shovelButtonActiveCount = 0
             self.wateringCanButtonActiveCount = 0
             self.showingWateringCan = 0
@@ -1950,12 +1951,6 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         if self.questMap:
             self.questMap.stop()
 
-    def getPetId(self):
-        return False
-
-    def hasPet(self):
-        return False
-
     def setAchievements(self, achievements):
         if base.wantAchievements:
             if self.canEarnAchievements:
@@ -1966,3 +1961,38 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
                 self.canEarnAchievements = True
 
         DistributedToon.DistributedToon.setAchievements(self, achievements)
+
+    def getPetId(self):
+        return self.petId
+
+    def hasPet(self):
+        return self.petId != 0        
+    
+    def getPetDNA(self):
+        if self.hasPet():
+            pet = base.cr.identifyFriend(self.petId)
+            return pet.style if pet else None
+        return None
+
+    def setPetId(self, petId):
+        self.petId = petId
+        if self.isLocal():
+            base.cr.addPetToFriendsMap()
+
+    def b_setPetMovie(self, petId, flag):
+        self.d_setPetMovie(petId, flag)
+        self.setPetMovie(petId, flag)
+
+    def d_setPetMovie(self, petId, flag):
+        self.sendUpdate('setPetMovie', [petId, flag])
+
+    def setPetMovie(self, petId, flag):
+        pass
+
+    def lookupPetDNA(self):
+        if self.petId and not self.petDNA:
+            from toontown.pets import PetDetail
+            PetDetail.PetDetail(self.petId, self.__petDetailsLoaded)
+
+    def __petDetailsLoaded(self, pet):
+        self.petDNA = pet.style

@@ -712,13 +712,12 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         if doId in self.friendsMap:
             teleportNotify.debug('friend %s in friendsMap' % doId)
             return self.friendsMap[doId]
-        avatar = None
         if doId in self.doId2do:
             teleportNotify.debug('found friend %s in doId2do' % doId)
-            avatar = self.doId2do[doId]
+            return self.doId2do[doId]
         elif self.cache.contains(doId):
             teleportNotify.debug('found friend %s in cache' % doId)
-            avatar = self.cache.dict[doId]
+            return self.cache.dict[doId]
         elif self.playerFriendsManager.getAvHandleFromId(doId):
             teleportNotify.debug('found friend %s in playerFriendsManager' % doId)
             avatar = base.cr.playerFriendsManager.getAvHandleFromId(doId)
@@ -728,16 +727,13 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         if not ((isinstance(avatar, DistributedToon.DistributedToon) and avatar.__class__ is DistributedToon.DistributedToon) or isinstance(avatar, DistributedPet.DistributedPet)):
             self.notify.warning('friendsNotify%s: invalid friend object %s' % (choice(source, '(%s)' % source, ''), doId))
             return
-        if base.wantPets:
-            if avatar.isPet():
-                if avatar.bFake:
-                    handle = PetHandle.PetHandle(avatar)
-                else:
-                    handle = avatar
+        if avatar.isPet():
+            if avatar.bFake:
+                handle = PetHandle.PetHandle(avatar)
             else:
-                handle = FriendHandle.FriendHandle(doId, avatar.getName(), avatar.style, avatar.getPetId())
+                handle = avatar
         else:
-            handle = FriendHandle.FriendHandle(doId, avatar.getName(), avatar.style, '')
+            handle = FriendHandle.FriendHandle(doId, avatar.getName(), avatar.style, avatar.getPetId())
         teleportNotify.debug('adding %s to friendsMap' % doId)
         self.friendsMap[doId] = handle
         return handle
@@ -756,7 +752,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
             if self.identifyFriend(friendId) == None:
                 return 0
 
-        if base.wantPets and base.localAvatar.hasPet():
+        if base.localAvatar.hasPet():
             if base.localAvatar.getPetId() not in self.friendsMap:
                 return 0
         return 1
@@ -789,12 +785,13 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
 
     def addPetToFriendsMap(self, callback = None):
         doId = base.localAvatar.getPetId()
-        if doId not in self.friendsMap:
+        if not doId or doId in self.friendsMap:
             if callback:
                 callback()
             return
 
         def petDetailsCallback(petAvatar):
+            petAvatar.announceGenerate()
             handle = PetHandle.PetHandle(petAvatar)
             self.friendsMap[doId] = handle
             petAvatar.disable()
@@ -823,7 +820,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
                 self.notify.debug('calling setCommonAndWL %s' % str(self.friendPendingChatSettings[doId]))
                 handle.setCommonAndWhitelistChatFlags(*self.friendPendingChatSettings[doId])
 
-        if base.wantPets and base.localAvatar.hasPet():
+        if base.localAvatar.hasPet():
 
             def handleAddedPet():
                 self.friendsMapPending = 0

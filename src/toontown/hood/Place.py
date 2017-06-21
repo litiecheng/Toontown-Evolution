@@ -641,9 +641,9 @@ class Place(StateData.StateData, FriendsListManager.FriendsListManager):
         avId = requestStatus['avId']
         self.acceptOnce('setLocalEstateZone', self.goHome)
         if avId > 0:
-            base.cr.estateMgr.getLocalEstateZone(avId)
+            base.cr.estateManager.getLocalEstateZone(avId)
         else:
-            base.cr.estateMgr.getLocalEstateZone(base.localAvatar.getDoId())
+            base.cr.estateManager.getLocalEstateZone(base.localAvatar.getDoId())
         if HouseGlobals.WANT_TELEPORT_TIMEOUT:
             taskMgr.doMethodLater(HouseGlobals.TELEPORT_TIMEOUT, self.goHomeFailed, 'goHomeFailed')
 

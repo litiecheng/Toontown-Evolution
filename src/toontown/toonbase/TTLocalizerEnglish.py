@@ -1916,7 +1916,8 @@ SkeleRevivePostFix = 'XR Alpha'
 SkeleRevivePostFix2 = 'XR Beta'
 SkeleRevivePostFix3 = 'XR Gamma'
 SkeleRevivePostFix4 = 'XR Delta'
-SkeleRevivePostFix5 = 'XR Omega'
+SkeleRevivePostFix5 = 'XR Epsilon'
+SkeleRevivePostFix6 = 'XR Omega'
 SkeleRevivePreFix = 'XR'
 AvatarDetailPanelOK = lOK
 AvatarDetailPanelCancel = lCancel
@@ -5560,7 +5561,34 @@ NumToColor = ['White',
  'Crimson',
  'Dark Green',
  'Steel Blue',
- 'ToonFest Blue']
+ 'ToonFest Blue',
+ 'Mountain Green',
+ 'Icy Blue',
+ 'Desert Sand',
+ 'Mint',
+ 'Charcoal',
+ 'Hot Pink',
+ 'Honey Mustard',
+ 'Gray',
+ 'Neon Orange',
+ 'Sapphire',
+ 'Crimson',
+ 'Emerald',
+ 'Bronze',
+ 'African Violet',
+ 'Magenta',
+ 'Medium Purple',
+ 'Ivory',
+ 'Thistle',
+ 'Spring Green',
+ 'Goldenrod',
+ 'Cadium Yellow',
+ 'Peach Puff',
+ 'Toony Teal',
+ 'Salmon',
+ 'Banana Yellow',
+ 'Dim Gray',
+ 'Gold']
 AnimalToSpecies = {'dog': 'Dog',
  'cat': 'Cat',
  'mouse': 'Mouse',
@@ -6879,7 +6907,6 @@ DistributedMailboxWaiting = 'Your mailbox is empty right now, but the package yo
 DistributedMailboxReady = 'Your order has arrived!'
 DistributedMailboxNotOwner = 'Sorry, this is not your mailbox.'
 DistributedPhoneEmpty = "You can use any phone to order special items for you and your house.  New items will become available to order over time.\n\nYou don't have any items available to order right now, but check back later!"
-DistributedPhoneNoHouse = 'You must have a house to use the catalog!'
 Clarabelle = 'Clarabelle'
 MailboxExitButton = 'Close Mailbox'
 MailboxAcceptButton = 'Take this item'
@@ -9874,18 +9901,6 @@ InteractivePropTrackBonusTerms = {0: 'Super Toon-Up!',
  6: '',
  7: ''}
 PlayingCardUnknown = 'Card Name is unknown'
-YinTitle = 'Are you absolutely sure?'
-YinNotCat = 'Sorry, I only make cats black.'
-YinAlreadyBlack = "You're already black!"
-YinPickColor = 'Are you sure you want to be a black cat?'
-YinEnjoy = 'Enjoy! You are now permanently a black cat.'
-YinGoodbye = 'Okay, then. See you later!'
-YangTitle = 'Are you absolutely sure?'
-YangNotBear = 'Sorry, I only make bears white.'
-YangAlreadyWhite = "You're already white!"
-YangPickColor = 'Are you sure you want to be a polar bear?'
-YangEnjoy = 'Enjoy! You are now permanently a polar bear.'
-YangGoodbye = 'Okay, then. See you later!'
 
 # Buffs
 

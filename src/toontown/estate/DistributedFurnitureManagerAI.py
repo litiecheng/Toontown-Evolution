@@ -11,7 +11,7 @@ from DistributedFurnitureItemAI import DistributedFurnitureItemAI
 from DistributedPhoneAI import DistributedPhoneAI
 from DistributedClosetAI import DistributedClosetAI
 from DistributedTrunkAI import DistributedTrunkAI
-from otp.ai.MagicWordGlobal import *
+
 
 class FurnitureError(Exception):
     def __init__(self, code):
@@ -99,20 +99,6 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
             item.destroy()
         self.items = []
 
-        items.removeDuplicates(FLCloset)
-
-        # Due to a bug, some people are missing their closets...
-        hasCloset = False
-        for item in items:
-            if item.getFlags() & FLCloset:
-                hasCloset = True
-                break
-
-        if not hasCloset and self.ownerId != 0:
-            item = CatalogFurnitureItem(500)  # the basic closet...
-            item.posHpr = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-            items.append(item)
-            # Since we have modified the items list, should we save it back to the house?
 
         for item in items:
             if item.getFlags() & FLTrunk:
@@ -330,34 +316,32 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
         pass
 
     def moveWallpaperFromAttic(self, index, room):
+        return ToontownGlobals.FM_InvalidIndex
+
         retcode = ToontownGlobals.FM_SwappedItem
         wallpaper = self.getAtticFurniture(self.atticWallpaper, index)
         if wallpaper is None:
             self.air.writeServerEvent('suspicious', avId=self.air.getAvatarIdFromSender(), issue='Invalid wallpaper at index %s' % index)
             return ToontownGlobals.FM_InvalidIndex
-
         if room > 1:
             self.air.writeServerEvent('suspicious', avId=self.air.getAvatarIdFromSender(), issue='Tried to apply a wallpaper in an invalid room %d!' % room)
             return ToontownGlobals.FM_InvalidItem
-        interiorIndex = room*4
-        if isinstance(wallpaper, CatalogMouldingItem):
-            interiorIndex += 1
-        elif isinstance(wallpaper, CatalogFlooringItem):
-            interiorIndex += 2
-        elif isinstance(wallpaper, CatalogWainscotingItem):
-            interiorIndex += 3
+        interiorIndex = room + wallpaper.getSurfaceType()
+        interiorIndex += wallpaper.getSurfaceType() - 1
+        print room
+        print interiorIndex
         atticIndex = self.atticWallpaper.index(wallpaper)
         self.atticWallpaper[atticIndex] = self.wallpaper[interiorIndex]
         self.d_setAtticWallpaper(self.getAtticWallpaper())
         self.wallpaper[interiorIndex] = wallpaper
         self.applyWallpaper()
-
         return retcode
 
     def deleteWallpaperFromAttic(self, blob, index):
+        return # TODO
+
         wallpaper = self.getAtticFurniture(blob, index)
-        if wallpaper in self.atticWallpaper:
-            self.atticWallpaper.remove(wallpaper)
+        self.atticWallpaper.remove(wallpaper)
         self.b_setAtticWallpaper(self.getAtticWallpaper())
 
     def moveWindowToAttic(self, slot):
@@ -492,98 +476,3 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
             if window.placement == slot:
                 return window
         return None
-
-@magicWord(category=CATEGORY_PROGRAMMER, types=[])
-def findCloset():
-    """
-    find the closet
-    """
-    target = spellbook.getTarget()
-    if not target:
-        target = spellbook.getInvoker()
-    if not target:
-        return "Strange.. who are we talking about?"
-
-    if not hasattr(target, "estate") or not hasattr(target.estate, "houses"):
-        return "no houses in the state"
-
-    for house in target.estate.houses:
-        if house.doId == target.houseId:
-            fm = house.interior.furnitureManager
-            for item in fm.items:
-                if item.catalogItem.getFlags() & FLCloset:
-                    return 'items: %s'%(str(item.catalogItem))
-            for item in fm.atticItems:
-                if item.getFlags() & FLCloset:
-                    return 'atticItems: %s'%(str(item))
-    return "I cannot find your closet"
-
-@magicWord(category=CATEGORY_PROGRAMMER, types=[])
-def recoverCloset():
-    """
-    recover the closet
-    """
-    target = spellbook.getTarget()
-    if not target:
-        target = spellbook.getInvoker()
-    if not target:
-        return "Strange.. who are we talking about?"
-
-    if not hasattr(target, "estate") or not hasattr(target.estate, "houses"):
-        return "no houses in the state"
-
-    for house in target.estate.houses:
-        if house.doId == target.houseId:
-            fm = house.interior.furnitureManager
-            for item in reversed(fm.items):
-                if item.catalogItem.getFlags() & FLCloset:
-                    fm.moveItemToAttic(item.doId);
-                    return "Moved the closet"
-            fm.saveToHouse()
-    return "I cannot find your closet"
-
-@magicWord(category=CATEGORY_PROGRAMMER, types=[])
-def fillAttic():
-    """
-    move everything to the attic
-    """
-    target = spellbook.getTarget()
-    if not target:
-        target = spellbook.getInvoker()
-    if not target:
-        return "Strange.. who are we talking about?"
-
-    if not hasattr(target, "estate") or not hasattr(target.estate, "houses"):
-        return "no houses in the state"
-
-    for house in target.estate.houses:
-        if house.doId == target.houseId:
-            fm = house.interior.furnitureManager
-            for item in reversed(fm.items):
-                fm.moveItemToAttic(item.doId);
-            fm.saveToHouse()
-    return "everything has been moved to the attic"
-
-
-@magicWord(category=CATEGORY_PROGRAMMER, types=[])
-def emptyHouse():
-    """
-    delete everything in the house
-    """
-    target = spellbook.getTarget()
-    if not target:
-        target = spellbook.getInvoker()
-    if not target:
-        return "Strange.. who are we talking about?"
-
-    if not hasattr(target, "estate") or not hasattr(target.estate, "houses"):
-        return "no houses in the state"
-
-    for house in target.estate.houses:
-        if house.doId == target.houseId:
-            fm = house.interior.furnitureManager
-            for item in reversed(fm.items):
-                item.destroy()
-                fm.items.remove(item)
-            fm.saveToHouse()
-    return "The house is empty"

@@ -36,4 +36,3 @@ want-parties #f
 
 # Optional:
 want-talkative-tyler #f
-want-yin-yang #f

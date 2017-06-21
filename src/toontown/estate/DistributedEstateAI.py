@@ -92,7 +92,6 @@ class DistributedEstateAI(DistributedObjectAI):
             if house is not None:
                 house.requestDelete()
 
-        del self.houses[:]
 
         if self.pond is not None:
             self.pond.requestDelete()
@@ -305,6 +304,14 @@ class DistributedEstateAI(DistributedObjectAI):
     def gameTableOver(self):
         pass
 
+    def updateToons(self):
+        self.d_setSlot0ToonId(self.toons[0])
+        self.d_setSlot1ToonId(self.toons[1])
+        self.d_setSlot2ToonId(self.toons[2])
+        self.d_setSlot3ToonId(self.toons[3])
+        self.d_setSlot4ToonId(self.toons[4])
+        self.d_setSlot5ToonId(self.toons[5])
+
     def placeStarterGarden(self, av):
         if av is None:
             return
@@ -316,13 +323,3 @@ class DistributedEstateAI(DistributedObjectAI):
                     return
 
         self.notify.warning('Avatar %s tried to place a starter garden when he didnt own a house!' % av.doId)
-
-    def updateToons(self):
-        self.d_setSlot0ToonId(self.toons[0])
-        self.d_setSlot1ToonId(self.toons[1])
-        self.d_setSlot2ToonId(self.toons[2])
-        self.d_setSlot3ToonId(self.toons[3])
-        self.d_setSlot4ToonId(self.toons[4])
-        self.d_setSlot5ToonId(self.toons[5])
-
-        self.sendUpdate('setIdList', [self.toons])

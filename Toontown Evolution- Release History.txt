@@ -79,3 +79,11 @@
 
 1.8.1:
 1. Bug Fixes for Friends Manager
+
+1.9.0:
+1. Doodles 
+2. Added XR Epsilon Support for the Cogs
+3. Catalog GUI from Toontown Online
+4. New Toon Colors
+5. Changed Laff limit to 137
+6. Removed Yin and Yang

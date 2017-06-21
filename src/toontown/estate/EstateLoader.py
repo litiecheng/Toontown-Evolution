@@ -69,7 +69,7 @@ class EstateLoader(SafeZoneLoader.SafeZoneLoader):
 
     def unload(self):
         self.ignoreAll()
-        base.cr.estateMgr.leaveEstate()
+        base.cr.estateManager.leaveEstate()
         self.estateOwnerId = None
         self.estateZoneId = None
         if self.place:

@@ -282,16 +282,16 @@ scStructure = [
  {1: 17},
  {2: 18},
  3]
-if hasattr(base, 'wantPets'):
-    scPetMenuStructure = base.wantPets and [[OTPLocalizer.SCMenuPets,
-      [TTSCPetTrickMenu, OTPLocalizer.SCMenuPetTricks],
-      21000,
-      21001,
-      21002,
-      21003,
-      21004,
-      21005,
-      21006]]
+ 
+scPetMenuStructure = [[OTPLocalizer.SCMenuPets,
+  [TTSCPetTrickMenu, OTPLocalizer.SCMenuPetTricks],
+  21000,
+  21001,
+  21002,
+  21003,
+  21004,
+  21005,
+  21006]]
 cfoMenuStructure = [[OTPLocalizer.SCMenuCFOBattleCranes,
   2100,
   2101,
@@ -435,8 +435,7 @@ class TTChatInputSpeedChat(DirectObject.DirectObject):
         structure.append([SCEmoteMenu, OTPLocalizer.SCMenuEmotions])
         structure.append([SCCustomMenu, OTPLocalizer.SCMenuCustom])
         structure.append([TTSCResistanceMenu, OTPLocalizer.SCMenuResistance])
-        if hasattr(base, 'wantPets') and base.wantPets:
-            structure += scPetMenuStructure
+        structure += scPetMenuStructure
         structure += scStructure
         self.createSpeedChatObject(structure)
         self.enterActive()

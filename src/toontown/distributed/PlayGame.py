@@ -424,9 +424,9 @@ class PlayGame(StateData.StateData):
          'shardId': None}
         self.acceptOnce('setLocalEstateZone', self.goHome)
         if avId > 0:
-            base.cr.estateMgr.getLocalEstateZone(avId)
+            base.cr.estateManager.getLocalEstateZone(avId)
         else:
-            base.cr.estateMgr.getLocalEstateZone(base.localAvatar.getDoId())
+            base.cr.estateManager.getLocalEstateZone(base.localAvatar.getDoId())
         return
 
     def goHome(self, ownerId, zoneId):

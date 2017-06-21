@@ -108,9 +108,8 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.savedCheesyEffect = ToontownGlobals.CENormal
         self.savedCheesyHoodId = 0
         self.savedCheesyExpireTime = 0
-        if hasattr(base, 'wantPets') and base.wantPets:
-            self.petTrickPhrases = []
-            self.petDNA = None
+        self.petTrickPhrases = []
+        self.petDNA = None
         self.customMessages = []
         self.resistanceMessages = []
         self.cogSummonsEarned = []
@@ -1109,12 +1108,10 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
                 else:
                     self.useWalkControls()
 
-    if hasattr(base, 'wantPets') and base.wantPets:
-
-        def setPetTrickPhrases(self, petTricks):
-            self.petTrickPhrases = petTricks
-            if self.isLocal():
-                messenger.send('petTrickPhrasesChanged')
+    def setPetTrickPhrases(self, petTricks):
+        self.petTrickPhrases = petTricks
+        if self.isLocal():
+            messenger.send('petTrickPhrasesChanged')
 
     def setCustomMessages(self, customMessages):
         self.customMessages = customMessages
@@ -1737,77 +1734,63 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         def getKartingPersonalBestAll(self):
             return self.kartingPersonalBest + self.kartingPersonalBest2
 
-    if hasattr(base, 'wantPets') and base.wantPets:
+    def setPetId(self, petId):
+        self.petId = petId
+        if self.isLocal():
+            base.cr.addPetToFriendsMap()
 
-        def setPetId(self, petId):
-            self.petId = petId
-            if petId == 0:
-                self.petDNA = None
-            elif self.isLocal():
-                base.cr.addPetToFriendsMap()
-            return
+    def getPetId(self):
+        return self.petId
 
-        def getPetId(self):
-            return self.petId
+    def hasPet(self):
+        return self.petId != 0
 
-        def getPetId(self):
-            return self.petId
+    def b_setPetTutorialDone(self, bDone):
+        self.d_setPetTutorialDone(bDone)
+        self.setPetTutorialDone(bDone)
 
-        def hasPet(self):
-            return self.petId != 0
+    def d_setPetTutorialDone(self, bDone):
+        self.sendUpdate('setPetTutorialDone', [bDone])
 
-        def b_setPetTutorialDone(self, bDone):
-            self.d_setPetTutorialDone(bDone)
-            self.setPetTutorialDone(bDone)
+    def setPetTutorialDone(self, bDone):
+        self.bPetTutorialDone = bDone
 
-        def d_setPetTutorialDone(self, bDone):
-            self.sendUpdate('setPetTutorialDone', [bDone])
+    def b_setFishBingoTutorialDone(self, bDone):
+        self.d_setFishBingoTutorialDone(bDone)
+        self.setFishBingoTutorialDone(bDone)
 
-        def setPetTutorialDone(self, bDone):
-            self.bPetTutorialDone = bDone
+    def d_setFishBingoTutorialDone(self, bDone):
+        self.sendUpdate('setFishBingoTutorialDone', [bDone])
 
-        def b_setFishBingoTutorialDone(self, bDone):
-            self.d_setFishBingoTutorialDone(bDone)
-            self.setFishBingoTutorialDone(bDone)
+    def setFishBingoTutorialDone(self, bDone):
+        self.bFishBingoTutorialDone = bDone
 
-        def d_setFishBingoTutorialDone(self, bDone):
-            self.sendUpdate('setFishBingoTutorialDone', [bDone])
+    def b_setFishBingoMarkTutorialDone(self, bDone):
+        self.d_setFishBingoMarkTutorialDone(bDone)
+        self.setFishBingoMarkTutorialDone(bDone)
 
-        def setFishBingoTutorialDone(self, bDone):
-            self.bFishBingoTutorialDone = bDone
+    def d_setFishBingoMarkTutorialDone(self, bDone):
+        self.sendUpdate('setFishBingoMarkTutorialDone', [bDone])
 
-        def getFishBingoTutorialDone(self):
-            return self.bFishBingoTutorialDone
+    def setFishBingoMarkTutorialDone(self, bDone):
+        self.bFishBingoMarkTutorialDone = bDone
 
-        def b_setFishBingoMarkTutorialDone(self, bDone):
-            self.d_setFishBingoMarkTutorialDone(bDone)
-            self.setFishBingoMarkTutorialDone(bDone)
+    def b_setPetMovie(self, petId, flag):
+        self.d_setPetMovie(petId, flag)
+        self.setPetMovie(petId, flag)
 
-        def d_setFishBingoMarkTutorialDone(self, bDone):
-            self.sendUpdate('setFishBingoMarkTutorialDone', [bDone])
+    def d_setPetMovie(self, petId, flag):
+        self.sendUpdate('setPetMovie', [petId, flag])
 
-        def setFishBingoMarkTutorialDone(self, bDone):
-            self.bFishBingoMarkTutorialDone = bDone
+    def setPetMovie(self, petId, flag):
+        pass
 
-        def getFishBingoMarkTutorialDone(self):
-            return self.bFishBingoMarkTutorialDone
+    def lookupPetDNA(self):
+        from toontown.pets import PetDetail
+        if self.petId and not self.petDNA:
+            PetDetail.PetDetail(self.petId, self.__petDetailsLoaded)
 
-        def b_setPetMovie(self, petId, flag):
-            self.d_setPetMovie(petId, flag)
-            self.setPetMovie(petId, flag)
-
-        def d_setPetMovie(self, petId, flag):
-            self.sendUpdate('setPetMovie', [petId, flag])
-
-        def setPetMovie(self, petId, flag):
-            pass
-
-        def lookupPetDNA(self):
-            if self.petId and not self.petDNA:
-                from toontown.pets import PetDetail
-                PetDetail.PetDetail(self.petId, self.__petDetailsLoaded)
-
-        def __petDetailsLoaded(self, pet):
+    def __petDetailsLoaded(self, pet):
             self.petDNA = pet.style
 
     def trickOrTreatTargetMet(self, beanAmount):

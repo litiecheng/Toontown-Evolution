@@ -53,13 +53,7 @@ from toontown.toonbase import ToontownGlobals
 from toontown.toonbase.ToontownGlobals import *
 from toontown.toonbase.TTLocalizerEnglish import SuitNameDropper
 
-
-if simbase.wantPets:
-    from toontown.pets import PetLookerAI, PetObserve
-else:
-    class PetLookerAI:
-        class PetLookerAI:
-            pass
+from toontown.pets import PetLookerAI, PetObserve
 
 if simbase.wantKarts:
     from toontown.racing.KartDNA import *
@@ -96,8 +90,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         DistributedPlayerAI.DistributedPlayerAI.__init__(self, air)
         DistributedSmoothNodeAI.DistributedSmoothNodeAI.__init__(self, air)
 
-        if simbase.wantPets:
-            PetLookerAI.PetLookerAI.__init__(self)
+        PetLookerAI.PetLookerAI.__init__(self)
 
         self.air = air
         self.dna = ToonDNA.ToonDNA()
@@ -150,8 +143,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self._isGM = False
         self._gmType = None
         self.hpOwnedByBattle = 0
-        if simbase.wantPets:
-            self.petTrickPhrases = []
+        self.petTrickPhrases = []
         if simbase.wantBingo:
             self.bingoCheat = False
         self.customMessages = []
@@ -236,13 +228,12 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
                         self.b_setTeleportAccess(tpAccess)
 
     def sendDeleteEvent(self):
-        if simbase.wantPets:
-            isInEstate = self.isInEstate()
-            wasInEstate = self.wasInEstate()
-            if isInEstate or wasInEstate:
-                PetObserve.send(self.estateZones, PetObserve.PetActionObserve(PetObserve.Actions.LOGOUT, self.doId))
-                if wasInEstate:
-                    self.cleanupEstateData()
+        isInEstate = self.isInEstate()
+        wasInEstate = self.wasInEstate()
+        if isInEstate or wasInEstate:
+            PetObserve.send(self.estateZones, PetObserve.PetActionObserve(PetObserve.Actions.LOGOUT, self.doId))
+            if wasInEstate:
+                   self.cleanupEstateData()
 
         DistributedAvatarAI.DistributedAvatarAI.sendDeleteEvent(self)
 
@@ -257,11 +248,10 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self._dbCheckDoLater = None
         if self.isPlayerControlled():
             messenger.send('avatarExited', [self])
-        if simbase.wantPets:
-            if self.isInEstate():
-                self.exitEstate()
-            if self.zoneId != ToontownGlobals.QuietZone:
-                self.announceZoneChange(ToontownGlobals.QuietZone, self.zoneId)
+        if self.isInEstate():
+            self.exitEstate()
+        if self.zoneId != ToontownGlobals.QuietZone:
+            self.announceZoneChange(ToontownGlobals.QuietZone, self.zoneId)
         taskName = self.uniqueName('cheesy-expires')
         taskMgr.remove(taskName)
         taskName = self.uniqueName('next-catalog')
@@ -278,8 +268,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.inventory.unload()
         del self.inventory
         del self.experience
-        if simbase.wantPets:
-            PetLookerAI.PetLookerAI.destroy(self)
+        PetLookerAI.PetLookerAI.destroy(self)
         del self.kart
         self._sendExitServerEvent()
 
@@ -321,11 +310,10 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             messenger.send(self.staticGetLogicalZoneChangeAllEvent(), [newZoneId, oldZoneId, self])
 
     def announceZoneChange(self, newZoneId, oldZoneId):
-        if simbase.wantPets:
-            broadcastZones = [oldZoneId, newZoneId]
-            if self.isInEstate() or self.wasInEstate():
-                broadcastZones = union(broadcastZones, self.estateZones)
-            PetObserve.send(broadcastZones, PetObserve.PetActionObserve(PetObserve.Actions.CHANGE_ZONE, self.doId, (oldZoneId, newZoneId)))
+        broadcastZones = [oldZoneId, newZoneId]
+        if self.isInEstate() or self.wasInEstate():
+            broadcastZones = union(broadcastZones, self.estateZones)
+        PetObserve.send(broadcastZones, PetObserve.PetActionObserve(PetObserve.Actions.CHANGE_ZONE, self.doId, (oldZoneId, newZoneId)))
 
     def checkAccessorySanity(self, accessoryType, idx, textureIdx, colorIdx):
         if idx == 0 and textureIdx == 0 and colorIdx == 0:
@@ -2932,134 +2920,131 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         def setAllowRaceTimeout(self, allowRaceTimeout):
             self.allowRaceTimeout = allowRaceTimeout
 
-    if simbase.wantPets:
+    def getPetId(self):
+        return self.petId
 
-        def getPetId(self):
-            return self.petId
+    def b_setPetId(self, petId):
+        self.d_setPetId(petId)
+        self.setPetId(petId)
 
-        def b_setPetId(self, petId):
-            self.d_setPetId(petId)
-            self.setPetId(petId)
+    def d_setPetId(self, petId):
+        self.sendUpdate('setPetId', [petId])
 
-        def d_setPetId(self, petId):
-            self.sendUpdate('setPetId', [petId])
+    def setPetId(self, petId):
+        self.petId = petId
 
-        def setPetId(self, petId):
-            self.petId = petId
+    def getPetTrickPhrases(self):
+        return self.petTrickPhrases
 
-        def getPetTrickPhrases(self):
-            return self.petTrickPhrases
+    def b_setPetTrickPhrases(self, tricks):
+        self.setPetTrickPhrases(tricks)
+        self.d_setPetTrickPhrases(tricks)
 
-        def b_setPetTrickPhrases(self, tricks):
-            self.setPetTrickPhrases(tricks)
-            self.d_setPetTrickPhrases(tricks)
+    def d_setPetTrickPhrases(self, tricks):
+        self.sendUpdate('setPetTrickPhrases', [tricks])
 
-        def d_setPetTrickPhrases(self, tricks):
-            self.sendUpdate('setPetTrickPhrases', [tricks])
+    def setPetTrickPhrases(self, tricks):
+        self.petTrickPhrases = tricks
 
-        def setPetTrickPhrases(self, tricks):
-            self.petTrickPhrases = tricks
-
-        def deletePet(self):
-            if self.petId == 0:
-                self.notify.warning("this toon doesn't have a pet to delete!")
-                return
-            simbase.air.petMgr.deleteToonsPet(self.doId)
-
-        def setPetMovie(self, petId, flag):
-            self.notify.debug('setPetMovie: petId: %s, flag: %s' % (petId, flag))
-            pet = simbase.air.doId2do.get(petId)
-            if pet is not None:
-                if pet.__class__.__name__ == 'DistributedPetAI':
-                    pet.handleAvPetInteraction(flag, self.getDoId())
-                else:
-                    self.air.writeServerEvent('suspicious', self.doId, 'setPetMovie: playing pet movie %s on non-pet object %s' % (flag, petId))
+    def deletePet(self):
+        if self.petId == 0:
+            self.notify.warning("this toon doesn't have a pet to delete!")
             return
+        simbase.air.petMgr.deleteToonsPet(self.doId)
 
-        def setPetTutorialDone(self, bDone):
-            self.notify.debug('setPetTutorialDone')
-            self.bPetTutorialDone = True
+    def setPetMovie(self, petId, flag):
+        self.notify.debug('setPetMovie: petId: %s, flag: %s' % (petId, flag))
+        pet = simbase.air.doId2do.get(petId)
+        if pet is not None:
+            if pet.__class__.__name__ == 'DistributedPetAI':
+                pet.handleAvPetInteraction(flag, self.getDoId())
+            else:
+                self.air.writeServerEvent('suspicious', self.doId, 'setPetMovie: playing pet movie %s on non-pet object %s' % (flag, petId))
+        return
 
-        def setFishBingoTutorialDone(self, bDone):
-            self.notify.debug('setFishBingoTutorialDone')
-            self.bFishBingoTutorialDone = True
+    def setPetTutorialDone(self, bDone):
+        self.notify.debug('setPetTutorialDone')
+        self.bPetTutorialDone = True
 
-        def setFishBingoMarkTutorialDone(self, bDone):
-            self.notify.debug('setFishBingoMarkTutorialDone')
-            self.bFishBingoMarkTutorialDone = True
+    def setFishBingoTutorialDone(self, bDone):
+        self.notify.debug('setFishBingoTutorialDone')
+        self.bFishBingoTutorialDone = True
 
-        def enterEstate(self, ownerId, zoneId):
-            DistributedToonAI.notify.debug('enterEstate: %s %s %s' % (self.doId, ownerId, zoneId))
-            if self.wasInEstate():
-                self.cleanupEstateData()
-            collSphere = CollisionSphere(0, 0, 0, self.getRadius())
-            collNode = CollisionNode('toonColl-%s' % self.doId)
-            collNode.addSolid(collSphere)
-            collNode.setFromCollideMask(BitMask32.allOff())
-            collNode.setIntoCollideMask(ToontownGlobals.WallBitmask)
-            self.collNodePath = self.attachNewNode(collNode)
-            taskMgr.add(self._moveSphere, self._getMoveSphereTaskName(), priority=OTPGlobals.AICollMovePriority)
-            self.inEstate = 1
-            self.estateOwnerId = ownerId
-            self.estateZones = simbase.air.estateMgr.getEstateZones(ownerId)
-            self.estateHouseZones = simbase.air.estateMgr.getEstateHouseZones(ownerId)
-            self.enterPetLook()
+    def setFishBingoMarkTutorialDone(self, bDone):
+        self.notify.debug('setFishBingoMarkTutorialDone')
+        self.bFishBingoMarkTutorialDone = True
 
-        def _getPetLookerBodyNode(self):
-            return self.collNodePath
+    def enterEstate(self, ownerId, zoneId):
+        DistributedToonAI.notify.debug('enterEstate: %s %s %s' % (self.doId, ownerId, zoneId))
+        if self.wasInEstate():
+            self.cleanupEstateData()
+        collSphere = CollisionSphere(0, 0, 0, self.getRadius())
+        collNode = CollisionNode('toonColl-%s' % self.doId)
+        collNode.addSolid(collSphere)
+        collNode.setFromCollideMask(BitMask32.allOff())
+        collNode.setIntoCollideMask(ToontownGlobals.WallBitmask)
+        self.collNodePath = self.attachNewNode(collNode)
+        taskMgr.add(self._moveSphere, self._getMoveSphereTaskName(), priority=OTPGlobals.AICollMovePriority)
+        self.inEstate = 1
+        self.estateOwnerId = ownerId
+        self.estateZones = simbase.air.estateMgr.getEstateZones(ownerId)
+        self.estateHouseZones = simbase.air.estateMgr.getEstateHouseZones(ownerId)
+        self.enterPetLook()
 
-        def _getMoveSphereTaskName(self):
-            return 'moveSphere-%s' % self.doId
+    def _getPetLookerBodyNode(self):
+        return self.collNodePath
 
-        def _moveSphere(self, task):
-            self.collNodePath.setZ(self.getRender(), 0)
-            return Task.cont
+    def _getMoveSphereTaskName(self):
+        return 'moveSphere-%s' % self.doId
 
-        def isInEstate(self):
-            return hasattr(self, 'inEstate') and self.inEstate
+    def _moveSphere(self, task):
+        self.collNodePath.setZ(self.getRender(), 0)
+        return Task.cont
 
-        def exitEstate(self, ownerId = None, zoneId = None):
-            DistributedToonAI.notify.debug('exitEstate: %s %s %s' % (self.doId, ownerId, zoneId))
-            DistributedToonAI.notify.debug('current zone: %s' % self.zoneId)
-            self.exitPetLook()
-            taskMgr.remove(self._getMoveSphereTaskName())
-            self.collNodePath.removeNode()
-            del self.collNodePath
-            del self.estateOwnerId
-            del self.estateHouseZones
-            del self.inEstate
-            self._wasInEstate = 1
+    def isInEstate(self):
+        return hasattr(self, 'inEstate') and self.inEstate
 
-        def wasInEstate(self):
-            return hasattr(self, '_wasInEstate') and self._wasInEstate
+    def exitEstate(self, ownerId = None, zoneId = None):
+        DistributedToonAI.notify.debug('exitEstate: %s %s %s' % (self.doId, ownerId, zoneId))
+        DistributedToonAI.notify.debug('current zone: %s' % self.zoneId)
+        self.exitPetLook()
+        taskMgr.remove(self._getMoveSphereTaskName())
+        self.collNodePath.removeNode()
+        del self.collNodePath
+        del self.estateOwnerId
+        del self.estateHouseZones
+        del self.inEstate
+        self._wasInEstate = 1
 
-        def cleanupEstateData(self):
-            del self.estateZones
-            del self._wasInEstate
+    def wasInEstate(self):
+        return hasattr(self, '_wasInEstate') and self._wasInEstate
 
-        def setSC(self, msgId):
-            DistributedToonAI.notify.debug('setSC: %s' % msgId)
-            from toontown.pets import PetObserve
-            PetObserve.send(self.zoneId, PetObserve.getSCObserve(msgId, self.doId))
-            if msgId in [21006]:
-                self.setHatePets(1)
-            elif msgId in [21000,
-             21001,
-             21003,
-             21004,
-             21200,
-             21201,
-             21202,
-             21203,
-             21204,
-             21205,
-             21206]:
-                self.setHatePets(0)
+    def cleanupEstateData(self):
+        del self.estateZones
+        del self._wasInEstate
 
-        def setSCCustom(self, msgId):
-            DistributedToonAI.notify.debug('setSCCustom: %s' % msgId)
-            from toontown.pets import PetObserve
-            PetObserve.send(self.zoneId, PetObserve.getSCObserve(msgId, self.doId))
+    def setSC(self, msgId):
+        DistributedToonAI.notify.debug('setSC: %s' % msgId)
+        from toontown.pets import PetObserve
+        PetObserve.send(self.zoneId, PetObserve.getSCObserve(msgId, self.doId))
+        if msgId in [21006]:
+            self.setHatePets(1)
+        elif msgId in [21000,
+         21001,
+         21003,
+         21004,
+         21200,
+         21201,
+         21202,
+         21203,
+         21204,
+         21205,
+         21206]:
+            self.setHatePets(0)
+
+    def setSCCustom(self, msgId):
+        DistributedToonAI.notify.debug('setSCCustom: %s' % msgId)
+        PetObserve.send(self.zoneId, PetObserve.getSCObserve(msgId, self.doId))
 
     def setHatePets(self, hate):
         self.hatePets = hate
@@ -3567,7 +3552,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def sendGardenEvent(self):
         if hasattr(self, 'estateZones') and hasattr(self, 'doId'):
-            if simbase.wantPets and self.hatePets:
+            if self.hatePets:
                 PetObserve.send(self.estateZones, PetObserve.PetActionObserve(PetObserve.Actions.GARDEN, self.doId))
 
     def setGardenStarted(self, bStarted):
@@ -4449,8 +4434,7 @@ def maxToon(missingTrack=None):
     invoker.b_setBankMoney(10000)
 
     # Finally, unlock all of their pet phrases:
-    if simbase.wantPets:
-        invoker.b_setPetTrickPhrases(range(7))
+    invoker.b_setPetTrickPhrases(range(7))
 
     return 'Maxed your Toon!'
 
@@ -4479,8 +4463,7 @@ def unlocks():
     invoker.b_setEmoteAccess(emotes)
 
     # Finally, unlock all of their pet phrases:
-    if simbase.wantPets:
-        invoker.b_setPetTrickPhrases(range(7))
+    invoker.b_setPetTrickPhrases(range(7))
 
     return 'Unlocked teleport access, emotions, and pet trick phrases!'
 

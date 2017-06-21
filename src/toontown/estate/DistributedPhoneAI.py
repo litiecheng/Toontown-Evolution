@@ -13,14 +13,16 @@ class DistributedPhoneAI(DistributedFurnitureItemAI):
 
     def __init__(self, air, furnitureMgr, item):
         DistributedFurnitureItemAI.__init__(self, air, furnitureMgr, item)
-        self.initialScale = (0.8, 0.8, 0.8)
+
         self.avId = None
 
-    def setInitialScale(self, scale):
-        self.initialScale = scale
-    
     def getInitialScale(self):
-        return self.initialScale
+        return (0.8, 0.8, 0.8)
+
+    def setNewScale(self, sx, sy, sz):
+        if sx + sy + sz < 5:
+            return
+        self.sendUpdate('setInitialScale', [sx, sy, sz])
 
     def avatarEnter(self):
         avId = self.air.getAvatarIdFromSender()
@@ -45,7 +47,7 @@ class DistributedPhoneAI(DistributedFurnitureItemAI):
             taskMgr.doMethodLater(1, self.__resetMovie, 'resetMovie-%d' % self.getDoId(), extraArgs=[])
             return
 
-        self.air.questManager.toonUsedPhone(avId)
+        self.air.questManager.toonUsedPhone(av)
         self.avId = avId
         self.d_setMovie(PhoneGlobals.PHONE_MOVIE_PICKUP, avId, globalClockDelta.getRealNetworkTime(bits=32))
 
@@ -120,7 +122,6 @@ class DistributedPhoneAI(DistributedFurnitureItemAI):
             item.deliveryDate = int(time.time()/60) + item.getDeliveryTime()
             av.onOrder.append(item)
             av.b_setDeliverySchedule(av.onOrder)
-            self.air.popularItemManager.avBoughtItem(item)
             self.sendUpdateToAvatarId(avId, 'requestPurchaseResponse', [context, ToontownGlobals.P_ItemOnOrder])
             taskMgr.doMethodLater(0.2, self.sendUpdateToAvatarId, 'purchaseItemComplete-%d' % self.getDoId(), extraArgs=[avId, 'purchaseItemComplete', []])
         else:
@@ -130,8 +131,6 @@ class DistributedPhoneAI(DistributedFurnitureItemAI):
             resp = item.recordPurchase(av, optional)
             if resp < 0:
                     av.addMoney(price)
-            else:
-                self.air.popularItemManager.avBoughtItem(item)
 
             self.sendUpdateToAvatarId(avId, 'requestPurchaseResponse', [context, resp])
             taskMgr.doMethodLater(0.2, self.sendUpdateToAvatarId, 'purchaseItemComplete-%d' % self.getDoId(), extraArgs=[avId, 'purchaseItemComplete', []])

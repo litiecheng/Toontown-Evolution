@@ -1,3 +1,4 @@
+from direct.directnotify import DirectNotifyGlobal
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import TTLocalizer
 from direct.gui.DirectGui import *
@@ -5,7 +6,7 @@ from pandac.PandaModules import *
 CatalogNotifyBaseXPos = -0.87 if config.GetBool('want-news-page', ToontownGlobals.DefaultWantNewsPageSetting) else -0.93
 
 class CatalogNotifyDialog:
-    notify = directNotify.newCategory('CatalogNotifyDialog')
+    notify = DirectNotifyGlobal.directNotify.newCategory('CatalogNotifyDialog')
 
     def __init__(self, message):
         self.message = message
