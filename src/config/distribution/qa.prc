@@ -8,10 +8,9 @@ shard-mid-pop 50
 access-level-clamp 600 700
 
 # Core features:
-want-pets #f
+want-pets #t
 want-parties #f
 want-cogdominiums #f
-want-achievements #f
 
 # Chat:
 want-whitelist #f

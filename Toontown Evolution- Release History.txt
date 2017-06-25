@@ -87,3 +87,6 @@
 4. New Toon Colors
 5. Changed Laff limit to 137
 6. Removed Yin and Yang
+
+1.9.1:
+1. Removed Achievements
