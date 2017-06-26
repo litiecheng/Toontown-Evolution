@@ -90,3 +90,6 @@
 
 1.9.1:
 1. Removed Achievements
+
+1.9.2:
+1. Removed Buffs

@@ -4313,24 +4313,6 @@ class CogSuitPartReward(Reward):
         return TTLocalizer.QuestsCogSuitPartRewardPoster % {'cogTrack': self.getCogTrackName(),
          'part': self.getCogPartName()}
 
-
-class BuffReward(Reward):
-    def sendRewardAI(self, av):
-        av.addBuff(self.getBuffId(), self.getBuffTime())
-
-    def getBuffId(self):
-        return self.reward[0]
-
-    def getBuffTime(self):
-        return self.reward[1]
-
-    def getString(self):
-        return TTLocalizer.getBuffString(self.getBuffId(), self.getBuffTime())
-
-    def getPosterString(self):
-        return TTLocalizer.getBuffPosterString(self.getBuffId())
-
-
 def getRewardClass(id):
     reward = RewardDict.get(id)
     if reward:
@@ -4674,18 +4656,7 @@ RewardDict = {
     2968: (CheesyEffectReward, ToontownGlobals.CEFlatProfile, 1, 43200),
     2969: (CheesyEffectReward, ToontownGlobals.CETransparent, 1, 43200),
     2970: (CheesyEffectReward, ToontownGlobals.CENoColor, 1, 43200),
-    2971: (CheesyEffectReward, ToontownGlobals.CEInvisible, 1, 43200),
-    # Buff rewards (BuffID, Time):
-    # Movement Speed Increase
-    3001: (BuffReward, ToontownGlobals.BMovementSpeed, 30),
-    3002: (BuffReward, ToontownGlobals.BMovementSpeed, 60),
-    3003: (BuffReward, ToontownGlobals.BMovementSpeed, 180),
-    3004: (BuffReward, ToontownGlobals.BMovementSpeed, 360),
-    # Gag Accuracy Increase
-    3005: (BuffReward, ToontownGlobals.BGagAccuracy, 30),
-    3006: (BuffReward, ToontownGlobals.BGagAccuracy, 60),
-    3007: (BuffReward, ToontownGlobals.BGagAccuracy, 180),
-    3008: (BuffReward, ToontownGlobals.BGagAccuracy, 360) }
+    2971: (CheesyEffectReward, ToontownGlobals.CEInvisible, 1, 43200)}
 
 
 def getNumTiers():
