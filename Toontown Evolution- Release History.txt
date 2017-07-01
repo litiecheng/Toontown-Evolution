@@ -93,3 +93,6 @@
 
 1.9.2:
 1. Removed Buffs
+
+1.9.3:
+1. Bug Fix for Cog Battles
