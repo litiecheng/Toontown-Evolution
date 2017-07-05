@@ -187,6 +187,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self._dbCheckDoLater = None
         self.teleportOverride = 0
         self._gmDisabled = False
+        self.redeemedCodes = []
 
     def generate(self):
         DistributedPlayerAI.DistributedPlayerAI.generate(self)
@@ -993,6 +994,19 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def d_catalogGenAccessories(self):
         self.sendUpdate('catalogGenAccessories', [self.doId])
+
+    def getRedeemedCodes(self):
+        return self.redeemedCodes
+
+    def setRedeemedCodes(self, redeemedCodes):
+        self.redeemedCodes = redeemedCodes
+
+    def b_setRedeemedCodes(self, redeemedCodes):
+        self.setRedeemedCodes(redeemedCodes)
+        self.d_setRedeemedCodes(redeemedCodes)
+
+    def d_setRedeemedCodes(self, redeemedCodes):
+        self.sendUpdate('setRedeemedCodes', [redeemedCodes])
 
     def takeDamage(self, hpLost, quietly = 0, sendTotal = 1):
         if not self.immortalMode:

@@ -1173,39 +1173,26 @@ struct lawnItem {
 
 dclass DistributedEstate : DistributedObject {
   string DcObjectType db;
-
   setEstateReady() broadcast;
   setClientReady() airecv clsend;
-
   setEstateType(uint8 type = 0) required broadcast db;
-
   setClosestHouse(uint8) airecv clsend;
-
   setTreasureIds(uint32[]) broadcast ram;
-
   requestServerTime() airecv clsend;
   setServerTime(uint32);
-
   setDawnTime(uint32) required broadcast ram;
-
   placeOnGround(uint32) broadcast ram;
-
   setLastEpochTimeStamp(uint32 timestamp = 0) required airecv db;
-
   setRentalTimeStamp(uint32 timestamp = 0) required airecv db;
   setRentalType(uint8 type = 0) required airecv db;
-
   setSlot0ToonId(uint32 toonId = 0) required airecv db;
   setSlot1ToonId(uint32 toonId = 0) required airecv db;
   setSlot2ToonId(uint32 toonId = 0) required airecv db;
   setSlot3ToonId(uint32 toonId = 0) required airecv db;
   setSlot4ToonId(uint32 toonId = 0) required airecv db;
   setSlot5ToonId(uint32 toonId = 0) required airecv db;
-
   setIdList(uint32 []) broadcast ram;
-
   setClouds(uint8) required broadcast ram;
-
   cannonsOver() broadcast;
   gameTableOver() broadcast;
 };
@@ -3295,11 +3282,11 @@ dclass NonRepeatableRandomSourceClient {
 };
 
 dclass TTCodeRedemptionMgr : DistributedObject, NonRepeatableRandomSourceClient {
-  giveAwardToToonResult(uint32, uint32);
-  redeemCode(uint32, char [0-256]) airecv clsend;
-  redeemCodeAiToUd(uint32, DoId, uint32, string, uint32);
-  redeemCodeResultUdToAi(uint32, uint32, uint32, uint32, uint32) airecv;
-  redeemCodeResult(uint32, uint32, uint32);
+  giveAwardToToonResult(uint32 todo0, uint32 todo1);
+  redeemCode(uint32 code, char callback[0-256]) airecv clsend;
+  redeemCodeAiToUd(uint32 todo0, DoId todo1, uint32 todo2, string todo3, uint32 todo4);
+  redeemCodeResultUdToAi(uint32 todo0, uint32 todo1, uint32 todo2, uint32 todo3, uint32 todo4) airecv;
+  redeemCodeResult(uint32 context, uint32 result, uint32 awardMgrResult);
 };
 
 dclass NonRepeatableRandomSource : DistributedObject, NonRepeatableRandomSourceClient {

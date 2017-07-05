@@ -57,4 +57,6 @@ except Exception:
     import traceback
     info = traceback.format_exc()
     simbase.air.writeServerEvent('ai-exception', simbase.air.getAvatarIdFromSender(), simbase.air.getAccountIdFromSender(), info)
+    with open("ai-crash.txt", "a") as file:
+        file.write(info + "\n")
     raise

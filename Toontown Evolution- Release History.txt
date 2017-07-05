@@ -96,3 +96,6 @@
 
 1.9.3:
 1. Bug Fix for Cog Battles
+
+2.0.0:
+1. Code Redemption Manager
