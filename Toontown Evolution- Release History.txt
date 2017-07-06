@@ -99,3 +99,6 @@
 
 2.0.0:
 1. Code Redemption Manager
+
+2.0.1:
+1. Fixed scale of Doodle on Detail Panel

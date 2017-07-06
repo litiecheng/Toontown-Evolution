@@ -47,6 +47,7 @@ from toontown.toon import NPCToons
 from toontown.toonbase import ToontownGlobals
 from toontown.tutorial.TutorialManagerAI import TutorialManagerAI
 from toontown.uberdog.DistributedPartyManagerAI import DistributedPartyManagerAI
+from toontown.coderedemption.TTCodeRedemptionMgrAI import TTCodeRedemptionMgrAI
 
 
 if config.GetBool('want-web-rpc', False):
@@ -102,6 +103,8 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.newsManager = NewsManagerAI(self)
         self.newsManager.generateWithRequired(2)
         self.holidayManager = HolidayManagerAI(self)
+        self.codeRedemptionManager = TTCodeRedemptionMgrAI(self)
+        self.codeRedemptionManager.generateWithRequired(2)
         self.safeZoneManager = SafeZoneManagerAI(self)
         self.safeZoneManager.generateWithRequired(2)
         self.tutorialManager = TutorialManagerAI(self)
