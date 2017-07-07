@@ -102,3 +102,6 @@
 
 2.0.1:
 1. Fixed scale of Doodle on Detail Panel
+
+2.0.2:
+1. Bug Fix for Doodles

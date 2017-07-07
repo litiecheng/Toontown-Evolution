@@ -307,8 +307,13 @@ class Pet(Avatar.Avatar):
         return
 
     def showMood(self, mood):
-        if base.cr.newsManager.isHolidayRunning(ToontownGlobals.APRIL_TOONS_WEEK) and mood != 'confusion':
-            self.speakMood(mood)
+        if hasattr(base.cr, 'newsManager') and base.cr.newsManager:
+            holidayIds = base.cr.newsManager.getHolidayIdList()
+            if (ToontownGlobals.APRIL_FOOLS_COSTUMES in holidayIds or ToontownGlobals.SILLYMETER_EXT_HOLIDAY in holidayIds) and not mood == 'confusion':
+                self.speakMood(mood)
+                return
+            else:
+                self.clearChat()
         else:
             self.clearChat()
         mood = Component2IconDict[mood]
