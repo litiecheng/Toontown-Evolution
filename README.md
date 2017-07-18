@@ -6,4 +6,4 @@ single player remake of Disney's Toontown Online
 * Typical - Developer
 
 # Thanks
-* Thanks to Toontown Rewritten, Toontown Relived, Toontown: Project Altis, Toontown Offline, Operation Dessert Storm, Toontown Infinite for keeping Toontown's spirit alive.
+* Thanks to Toontown Rewritten, Toontown Relived, Toontown: Project Altis, Toontown Offline, Operation Dessert Storm, and Toontown Infinite for keeping Toontown's spirit alive.
