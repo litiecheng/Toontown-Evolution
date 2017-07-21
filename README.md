@@ -2,7 +2,7 @@
 single player remake of Disney's Toontown Online
 
 # Current Team
-* Josh Zimmer- Founder of Toontown Evolution
+* Josh Zimmer- Developer
 * Typical - Developer
 
 # Thanks
