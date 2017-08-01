@@ -1,11 +1,12 @@
 from toontown.building.DistributedElevatorExt import DistributedElevatorExt
+from toontown.building.ElevatorConstants import *
+from toontown.building.ElevatorUtils import *
+from toontown.toonbase import ToontownGlobals
 
 class DistributedCogdoElevatorExt(DistributedElevatorExt):
-
-    def setupElevator(self):
-        DistributedElevatorExt.setupElevator(self)
-        self.elevatorSphereNodePath.setY(-1.0)
-        self.elevatorSphereNodePath.setZ(1.5)
+    def __init__(self, cr):
+        DistributedElevatorExt.__init__(self, cr)
+        self.type = ELEVATOR_FIELD
 
     def getElevatorModel(self):
         return self.bldg.getCogdoElevatorNodePath()

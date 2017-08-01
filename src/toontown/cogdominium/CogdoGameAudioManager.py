@@ -51,7 +51,8 @@ class CogdoGameAudioManager:
         return
 
     def destroy(self):
-        del base.cogdoGameAudioMgr
+        if base.cogdoGameAudioMgr:
+            del base.cogdoGameAudioMgr
         self.stopAll()
         self.currentMusic = None
         del self.currentMusic

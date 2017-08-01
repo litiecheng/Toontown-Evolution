@@ -16,14 +16,10 @@ class DistCogdoLevelGame(CogdoLevelGameBase, DistCogdoGame, DistributedLevel):
     def generate(self):
         DistributedLevel.generate(self)
         DistCogdoGame.generate(self)
-        if __dev__:
-            bboard.post(EditorGlobals.EditTargetPostName, self)
-
+    
     def announceGenerate(self):
         DistributedLevel.announceGenerate(self)
         DistCogdoGame.announceGenerate(self)
-        if __dev__:
-            self.startHandleEdits()
 
     def createEntityCreator(self):
         return CogdoEntityCreator(level=self)
@@ -32,9 +28,6 @@ class DistCogdoLevelGame(CogdoLevelGameBase, DistCogdoGame, DistributedLevel):
         self.notify.debug('levelAnnounceGenerate')
         DistributedLevel.levelAnnounceGenerate(self)
         spec = self.getLevelSpec()
-        if __dev__:
-            typeReg = self.getEntityTypeReg()
-            spec.setEntityTypeReg(typeReg)
         DistributedLevel.initializeLevel(self, spec)
 
     def privGotSpec(self, levelSpec):
@@ -61,5 +54,3 @@ class DistCogdoLevelGame(CogdoLevelGameBase, DistCogdoGame, DistributedLevel):
     def delete(self):
         DistCogdoGame.delete(self)
         DistributedLevel.delete(self)
-        if __dev__:
-            bboard.removeIfEqual(EditorGlobals.EditTargetPostName, self)

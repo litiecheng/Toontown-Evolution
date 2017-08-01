@@ -19,7 +19,7 @@ from toontown.toon import TTEmote
 from otp.avatar import Emote
 from toontown.hood import ZoneUtil
 FO_DICT = {'s': 'tt_m_ara_cbe_fieldOfficeMoverShaker',
- 'l': 'tt_m_ara_cbe_fieldOfficeMoverShaker',
+ 'l': 'tt_m_ara_cbe_fieldOfficeLegalEagle',
  'm': 'tt_m_ara_cbe_fieldOfficeMoverShaker',
  'c': 'tt_m_ara_cbe_fieldOfficeMoverShaker',
  'p': 'tt_m_ara_cbe_fieldOfficeMoverShaker'}
@@ -565,7 +565,7 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         signTextNodePath = backgroundNP.attachNewNode(textNode.generate())
         signTextNodePath.setPosHprScale(0.0, 0.0, -0.13 + textHeight * 0.1 / zScale, 0.0, 0.0, 0.0, 0.1 * 8.0 / 20.0, 0.1, 0.1 / zScale)
         signTextNodePath.setColor(1.0, 1.0, 1.0, 1.0)
-        frontNP = suitBuildingNP.find('**/*_front/+GeomNode;+s')
+        frontNP = suitBuildingNP.find('**/*_front')
         backgroundNP.wrtReparentTo(frontNP)
         frontNP.node().setEffect(DecalEffect.make())
         suitBuildingNP.setName('cb' + str(self.block) + ':_landmark__DNARoot')

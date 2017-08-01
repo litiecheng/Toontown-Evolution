@@ -49,20 +49,20 @@ class CogdoMazeGame(DirectObject):
         self.lastBalloonTimestamp = None
         difficulty = self.distGame.getDifficulty()
         serialNum = 0
-        for i in xrange(numSuits[0]):
+        for i in range(numSuits[0]):
             suitRng = RandomNumGen(self.distGame.doId + serialNum * 10)
             suit = CogdoMazeBossSuit(serialNum, self.maze, suitRng, difficulty, startTile=suitSpawnSpot[0][i])
             self.addSuit(suit)
             self.guiMgr.mazeMapGui.addSuit(suit.suit)
             serialNum += 1
 
-        for i in xrange(numSuits[1]):
+        for i in range(numSuits[1]):
             suitRng = RandomNumGen(self.distGame.doId + serialNum * 10)
             suit = CogdoMazeFastMinionSuit(serialNum, self.maze, suitRng, difficulty, startTile=suitSpawnSpot[1][i])
             self.addSuit(suit)
             serialNum += 1
 
-        for i in xrange(numSuits[2]):
+        for i in range(numSuits[2]):
             suitRng = RandomNumGen(self.distGame.doId + serialNum * 10)
             suit = CogdoMazeSlowMinionSuit(serialNum, self.maze, suitRng, difficulty, startTile=suitSpawnSpot[2][i])
             self.addSuit(suit)
@@ -93,7 +93,7 @@ class CogdoMazeGame(DirectObject):
         return
 
     def _initAudio(self):
-        self._audioMgr = CogdoGameAudioManager(Globals.MusicFiles, Globals.SfxFiles, base.camera, cutoff=Globals.AudioCutoff)
+        self._audioMgr = CogdoGameAudioManager(Globals.MusicFiles, Globals.SfxFiles, camera, cutoff=Globals.AudioCutoff)
         self._quakeSfx1 = self._audioMgr.createSfx('quake')
         self._quakeSfx2 = self._audioMgr.createSfx('quake')
 
@@ -302,7 +302,7 @@ class CogdoMazeGame(DirectObject):
 
     def __updateGags(self):
         remove = []
-        for i in xrange(len(self.gags)):
+        for i in range(len(self.gags)):
             balloon = self.gags[i]
             if balloon.isSingleton():
                 remove.append(i)
@@ -353,7 +353,7 @@ class CogdoMazeGame(DirectObject):
             start = math.radians(random.randint(0, 360))
             step = math.radians(360.0 / numDrops)
             radius = 2.0
-            for i in xrange(numDrops):
+            for i in range(numDrops):
                 angle = start + i * step
                 x = radius * math.cos(angle) + suit.suit.getX()
                 y = radius * math.sin(angle) + suit.suit.getY()
@@ -465,9 +465,9 @@ class CogdoMazeGame(DirectObject):
             self.gags.append(gag)
         return
 
-    def handleToonMeetsGag(self, playerId, gag):
+    def handleToonMeetsGag(self, avId, gag):
         self.removeGag(gag)
-        self.distGame.b_toonHitByGag(playerId)
+        self.distGame.b_toonHitByGag(avId)
 
     def toonHitByGag(self, toonId, hitToon, elapsedTime = 0.0):
         if toonId not in self.toonId2Player.keys() or hitToon not in self.toonId2Player.keys():

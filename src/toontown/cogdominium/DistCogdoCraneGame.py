@@ -102,7 +102,7 @@ class DistCogdoCraneGame(CogdoCraneGameBase, DistCogdoLevelGame):
                 self.notify.warning('Not a collision node: %s' % repr(cnp))
                 break
             newCollideMask = newCollideMask | cn.getIntoCollideMask()
-            for i in xrange(cn.getNumSolids()):
+            for i in range(cn.getNumSolids()):
                 solid = cn.getSolid(i)
                 if isinstance(solid, PM.CollisionPolygon):
                     plane = PM.Plane(solid.getPlane())
@@ -151,9 +151,7 @@ class DistCogdoCraneGame(CogdoCraneGameBase, DistCogdoLevelGame):
         self._physicsTask = taskMgr.add(self._doPhysics, self.uniqueName('physics'), priority=25)
         self.evWalls.stash()
         self._startTimer()
-        if __dev__:
-            self.accept(self._durationChangedEvent, self._startTimer)
-
+        
     def _startTimer(self):
         timeLeft = GameConsts.Settings.GameDuration.get() - self.getCurrentGameTime()
         self.timer.posInTopRightCorner()
@@ -167,8 +165,6 @@ class DistCogdoCraneGame(CogdoCraneGameBase, DistCogdoLevelGame):
         return Task.cont
 
     def exitGame(self):
-        if __dev__:
-            self.ignore(self._durationChangedEvent)
         DistCogdoLevelGame.exitGame(self)
         self._physicsTask.remove()
 
@@ -181,31 +177,3 @@ class DistCogdoCraneGame(CogdoCraneGameBase, DistCogdoLevelGame):
 
     def timerExpired(self):
         pass
-
-    if __dev__:
-
-        def _handleGameDurationChanged(self, gameDuration):
-            messenger.send(self._durationChangedEvent)
-
-        def _handleGravityChanged(self, gravity):
-            self.physicsMgr.removeLinearForce(self._gravityForce)
-            self._gravityForceNode.removeForce(self._gravityForce)
-            self._gravityForce = PM.LinearVectorForce(0, 0, gravity)
-            self.physicsMgr.addLinearForce(self._gravityForce)
-            self._gravityForceNode.addForce(self._gravityForce)
-
-        def _handleEmptyFrictionCoefChanged(self, coef):
-            for crane in self.cranes.itervalues():
-                crane._handleEmptyFrictionCoefChanged(coef)
-
-        def _handleRopeLinkMassChanged(self, mass):
-            for crane in self.cranes.itervalues():
-                crane._handleRopeLinkMassChanged(mass)
-
-        def _handleMagnetMassChanged(self, mass):
-            for crane in self.cranes.itervalues():
-                crane._handleMagnetMassChanged(mass)
-
-        def _handleMoneyBagGrabHeightChanged(self, height):
-            for moneyBag in self.moneyBags.itervalues():
-                moneyBag._handleMoneyBagGrabHeightChanged(height)

@@ -188,6 +188,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.teleportOverride = 0
         self._gmDisabled = False
         self.redeemedCodes = []
+        self.emblems = [0, 0]
 
     def generate(self):
         DistributedPlayerAI.DistributedPlayerAI.generate(self)
@@ -2398,8 +2399,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.emblems = emblems
 
     def d_setEmblems(self, emblems):
-        if simbase.air.wantEmblems:
-            self.sendUpdate('setEmblems', [emblems])
+        self.sendUpdate('setEmblems', [emblems])
 
     def getEmblems(self):
         return self.emblems

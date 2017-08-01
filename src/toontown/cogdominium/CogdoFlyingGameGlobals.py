@@ -30,38 +30,39 @@ AI.SafezoneId2MinionDamage = {2000: 1,
  9000: 16}
 Camera = VariableContainer()
 Camera.Angle = 12.5
-Camera.Distance = 20
+Camera.Distance = 17
 Camera.LookAtToonHeightOffset = 1.0
 Camera.LeewayX = 0.5
 Camera.MinLeewayZ = 0.5
 Camera.MaxLeewayZ = 15.0
 Camera.CatchUpRateZ = 3.0
 Camera.LevelBoundsFactor = (0.6, 1.0, 0.9)
-Camera.AlphaBetweenToon = 0.35
+Camera.AlphaBetweenToon = 0.65
 Camera.SpinRadius = 9.0
 Camera.MaxSpinAngle = 20.0
 Camera.MaxSpinX = 16.0
+Camera.GameCameraFar = 400.0
 Gameplay = VariableContainer()
-Gameplay.SecondsUntilGameOver = 60.0 * 3.0
+Gameplay.SecondsUntilGameOver = 180.0
 Gameplay.TimeRunningOutSeconds = 45.0
 Gameplay.IntroDurationSeconds = 24.0
 Gameplay.FinishDurationSeconds = 10.0
 Gameplay.GatherableFlashTime = 1.0
-Gameplay.ToonAcceleration = {'forward': 40.0,
- 'backward': 40.0,
- 'turning': 40.0,
- 'boostUp': 15.0,
- 'fall': 10.0,
+Gameplay.ToonAcceleration = {'forward': 80.0,
+ 'backward': 60.0,
+ 'turning': 60.0,
+ 'boostUp': 20.0,
+ 'fall': 15.0,
  'activeDropDown': 20.0,
  'activeDropBack': 40.0,
  'fan': 80.0}
-Gameplay.ToonDeceleration = {'forward': 5.0,
- 'backward': 3.0,
+Gameplay.ToonDeceleration = {'forward': 10.0,
+ 'backward': 10.0,
  'turning': 10.0,
  'fan': 25.0}
-Gameplay.ToonVelMax = {'forward': 15.0,
- 'backward': 6.0,
- 'turning': 10.0,
+Gameplay.ToonVelMax = {'forward': 20.0,
+ 'backward': 12.0,
+ 'turning': 15.0,
  'boost': 5.5,
  'fall': 10.0,
  'fallNoFuel': 70.0,
@@ -122,12 +123,17 @@ Gameplay.BackpackState2TextureName = {Gameplay.BackpackStates.Normal: 'tt_t_ara_
  Gameplay.BackpackStates.Targeted: 'tt_t_ara_cfg_propellerPack_eagleTarget',
  Gameplay.BackpackStates.Attacked: 'tt_t_ara_cfg_propellerPack_eagleAttack',
  Gameplay.BackpackStates.Refuel: 'tt_t_ara_cfg_propellerPack_flash'}
-Gameplay.MinionDnaName = 'bf'
+Gameplay.MinionDnaName = ['bf',
+ 'b',
+ 'dt',
+ 'ac',
+ 'bs',
+ 'sd']
 Gameplay.MinionScale = 0.8
 Gui = VariableContainer()
 Gui.FuelNumBladesPos2D = (-0.005, -0.017)
 Gui.FuelNumBladesScale = 0.07
-Gui.FuelPos2D = (-1.19, -0.24)
+Gui.FuelPos2D = (0.143, 0.760)
 Gui.NumBlades2FuelColor = {0: (0.9, 0.15, 0.15, 1.0),
  1: (0.9, 0.15, 0.15, 1.0),
  2: (0.9, 0.9, 0.15, 1.0),
@@ -135,7 +141,7 @@ Gui.NumBlades2FuelColor = {0: (0.9, 0.15, 0.15, 1.0),
 Gui.FuelNormalColor = (0.25, 0.65, 0.25, 1.0)
 Gui.FuelLowColor = (0.9, 0.9, 0.15, 1.0)
 Gui.FuelVeryLowColor = (0.9, 0.15, 0.15, 1.0)
-Gui.ProgressPos2D = (1.15, -0.15)
+Gui.ProgressPos2D = (-0.183, 0.85)
 Gui.ProgressHPos2D = (0, 0.82)
 Gui.MarkerScale = 0.03
 Gui.LocalMarkerScale = 0.0425
@@ -165,17 +171,17 @@ LegalEagle.PostAttackLength = 5.0
 LegalEagle.CooldownTime = 5.0
 LegalEagle.PostCooldownHeightOffNest = 40.0
 Dev = DevVariableContainer('cogdoflying')
-Dev.DisableDeath = False
-Dev.InfiniteFuel = False
+Dev.DisableDeath = True
+Dev.InfiniteFuel = True
 Dev.InfiniteTimeLimit = True
-Dev.Invincibility = False
+Dev.Invincibility = True
 Dev.NoLegalEagleAttacks = False
 Audio = VariableContainer()
 Audio.Cutoff = 75.0
-Audio.MusicFiles = {'normal': 'phase_4/audio/bgm/MG_cannon_game.ogg',
- 'end': 'phase_4/audio/bgm/FF_safezone.ogg',
- 'waiting': 'phase_4/audio/bgm/m_match_bg2.ogg',
- 'invul': 'phase_4/audio/bgm/MG_CogThief.ogg',
+Audio.MusicFiles = {'normal': 'phase_5/audio/bgm/lawbot-flying-bgm.ogg',
+ 'end': 'phase_7/audio/bgm/encntr_toon_winning_indoor.ogg',
+ 'waiting': 'phase_7/audio/bgm/encntr_toon_winning_indoor.ogg',
+ 'invul': 'phase_9/audio/bgm/encntr_toon_winning.ogg',
  'timeRunningOut': 'phase_7/audio/bgm/encntr_suit_winning_indoor.ogg'}
 Audio.SfxFiles = {'propeller': 'phase_4/audio/sfx/TB_propeller.ogg',
  'propeller_damaged': 'phase_5/audio/sfx/tt_s_ara_cfg_propellers_damaged.ogg',
@@ -210,13 +216,13 @@ Level.QuadLengthUnits = 170
 Level.QuadVisibilityAhead = 1
 Level.QuadVisibilityBehind = 0
 Level.StartPlatformLength = 55
-Level.StartPlatformHeight = 20
-Level.EndPlatformLength = 55
+Level.StartPlatformHeight = 18
+Level.EndPlatformLength = 45
 Level.EndPlatformHeight = 0
 Level.FogColor = VBase4(0.18, 0.19, 0.32, 1.0)
-Level.RenderFogStartFactor = 0.22
+Level.RenderFogStartFactor = 0.2
 Level.GatherablesDefaultSpread = 1.0
-Level.NumMemosInRing = 6
+Level.NumMemosInRing = 4
 Level.PropellerSpinDuration = 10.0
 Level.QuadsByDifficulty = {1: (2, 4, 5),
  2: (1, 3, 7),
@@ -229,8 +235,8 @@ Level.DifficultyOrder = {2000: (1, 1, 1, 2, 1),
  9000: (2, 3, 2, 3, 2, 3, 2)}
 Dev.WantTempLevel = True
 Dev.DevQuadsOrder = (1, 2, 3, 4, 5, 6, 7, 8)
-Level.AddSparkleToPowerups = True
-Level.AddParticlesToStreamers = True
+Level.AddSparkleToPowerups = False
+Level.AddParticlesToStreamers = False
 Level.IgnoreLaffPowerups = False
 Level.SpawnLaffPowerupsInNests = True
 Level.LaffPowerupNestOffset = Point3(0.0, 2.0, 3.0)

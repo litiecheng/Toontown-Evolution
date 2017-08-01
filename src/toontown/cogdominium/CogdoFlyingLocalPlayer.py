@@ -45,7 +45,8 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
                       'FreeFly',
                       'Running',
                       'HitWhileFlying',
-                      'InWhirlwind'],
+                      'InWhirlwind',
+                      'WaitingForWin'],
          'InWhirlwind': ['Inactive',
                          'OutOfTime',
                          'Death',
@@ -112,6 +113,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
         self.fuel = 0.0
         self._guiMgr.setFuel(self.fuel)
         self.setCheckpointPlatform(self._level.startPlatform)
+        return
 
     def initSfx(self):
         audioMgr = base.cogdoGameAudioMgr
@@ -290,7 +292,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
         toonPos = self.toon.getPos(render)
         collPos = collEntry.getSurfacePoint(render)
         if toonPos.getZ() < collPos.getZ() + Globals.Gameplay.RayPlatformCollisionThreshold:
-            if not self.isToonOnFloor and self.state in ['FreeFly', 'FlyingUp']:
+            if not self.isToonOnFloor and self.state in ('FreeFly', 'FlyingUp'):
                 self.landOnPlatform(collEntry)
 
     def __handleRayCollisionAgainFloor(self, collEntry):
@@ -301,7 +303,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
         toonPos = self.toon.getPos(render)
         collPos = collEntry.getSurfacePoint(render)
         if toonPos.getZ() < collPos.getZ() + Globals.Gameplay.RayPlatformCollisionThreshold:
-            if not self.isToonOnFloor and self.state in ['FreeFly', 'FlyingUp']:
+            if not self.isToonOnFloor and self.state in ('FreeFly', 'FlyingUp'):
                 self.landOnPlatform(collEntry)
 
     def __handleEventCollisionExitFloor(self, collEntry):
@@ -314,9 +316,9 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             self.isToonOnFloor = False
             taskMgr.remove('delayedLandOnPlatform')
             taskMgr.remove('delayedLandOnWinPlatform')
-            if self.state not in ['FlyingUp', 'Spawn']:
+            if self.state not in ('FlyingUp', 'Spawn'):
                 self.notify.debug('Exited floor')
-                self.request('FreeFly')
+                #self.request('FreeFly')
 
     def delayedLandOnPlatform(self, platform):
         self.setCheckpointPlatform(platform)
@@ -328,11 +330,11 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
         return Task.done
 
     def handleTimerExpired(self):
-        if self.state not in ['WaitingForWin', 'Win']:
+        if self.state not in ('WaitingForWin', 'Win'):
             self.setCheckpointPlatform(self._level.endPlatform)
             self.postSpawnState = 'WaitingForWin'
             self.didTimeRunOut = True
-            if self.state not in ['Death']:
+            if self.state not in ('Death',):
                 self.request('OutOfTime')
 
     def ready(self):
@@ -555,29 +557,33 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
                 power = math.fabs(distance / fanHeight - 1.0) * powerRange + min
                 power = clamp(power, min, max)
                 blowVec *= power
-            fanVelocity = self.fanIndex2ToonVelocity[fan.index]
-            fanVelocity += blowVec
+            if fan.index in self.fanIndex2ToonVelocity:
+                fanVelocity = self.fanIndex2ToonVelocity[fan.index]
+                fanVelocity += blowVec
 
         removeList = []
         for fan in self.fansStillHavingEffect:
             if fan not in self.activeFans:
                 blowVec = fan.getBlowDirection()
                 blowVec *= Globals.Gameplay.ToonDeceleration['fan'] * dt
-                fanVelocity = Vec3(self.fanIndex2ToonVelocity[fan.index])
-                lastLen = fanVelocity.length()
-                fanVelocity -= blowVec
-                if fanVelocity.length() > lastLen:
-                    removeList.append(fan)
-                else:
-                    self.fanIndex2ToonVelocity[fan.index] = fanVelocity
+                if fan.index in self.fanIndex2ToonVelocity:
+                    fanVelocity = Vec3(self.fanIndex2ToonVelocity[fan.index])
+                    lastLen = fanVelocity.length()
+                    fanVelocity -= blowVec
+                    if fanVelocity.length() > lastLen:
+                        removeList.append(fan)
+                    else:
+                        self.fanIndex2ToonVelocity[fan.index] = fanVelocity
 
         for fan in removeList:
             self.fansStillHavingEffect.remove(fan)
-            del self.fanIndex2ToonVelocity[fan.index]
+            if fan.index in self.fanIndex2ToonVelocity:
+                del self.fanIndex2ToonVelocity[fan.index]
 
         self.fanVelocity = Vec3(0.0, 0.0, 0.0)
         for fan in self.fansStillHavingEffect:
-            self.fanVelocity += self.fanIndex2ToonVelocity[fan.index]
+            if fan.index in self.fanIndex2ToonVelocity:
+                self.fanVelocity += self.fanIndex2ToonVelocity[fan.index]
 
         minVal = -Globals.Gameplay.ToonVelMax['fan']
         maxVal = Globals.Gameplay.ToonVelMax['fan']
@@ -602,11 +608,14 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
 
     def updateToonPos(self, dt):
         toonWorldY = self.toon.getY(render)
+        toonWorldZ = self.toon.getZ(render)
         if self.hasPickedUpFirstPropeller == False:
             if toonWorldY > -7.6:
                 self.toon.setY(-7.6)
             elif toonWorldY < -35.0:
                 self.toon.setY(-35.0)
+            elif toonWorldZ > 18:
+                self.toon.setZ(18)
             return
         self.velocity = self.controlVelocity + self.fanVelocity
         vel = self.velocity * dt
@@ -614,7 +623,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
         toonPos = self.toon.getPos()
         if Globals.Dev.DisableDeath:
             pass
-        elif toonPos[2] < 0.0 and self.state in ['FreeFly', 'FlyingUp'] and self.allowFuelDeath():
+        elif toonPos[2] < 0.0 and self.state in ('FreeFly', 'FlyingUp') and self.allowFuelDeath():
             self.postSpawnState = 'Running'
             self.game.distGame.b_toonDied(self.toon.doId)
         if toonPos[2] > self._levelBounds[2][1]:
@@ -658,7 +667,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
         if fuelState > self.fuelState:
             self.game.distGame.b_toonSetBlades(self.toon.doId, fuelState)
         if fuelState < self.fuelState:
-            if self.state in ['FlyingUp', 'FreeFly', 'Running']:
+            if self.state in ('FlyingUp', 'FreeFly', 'Running'):
                 self.game.distGame.b_toonBladeLost(self.toon.doId)
 
     def resetBlades(self):
@@ -688,14 +697,14 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
         self.updateFuel(dt)
         if self.isFlying():
             self.updateToonFlyingState(dt)
-        if self.state in ['FreeFly', 'FlyingUp', 'Death']:
+        if self.state in ('FreeFly', 'FlyingUp', 'Death'):
             self.updateControlVelocity(dt)
         self.updateFanVelocity(dt)
         self.updateToonPos(dt)
         self._cameraMgr.update(dt)
 
     def isFlying(self):
-        if self.state in ['FreeFly', 'FlyingUp']:
+        if self.state in ('FreeFly', 'FlyingUp'):
             return True
         else:
             return False
@@ -707,7 +716,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
         else:
             self.ignore(base.JUMP)
             self.ignore('lcontrol')
-            self.acceptOnce(base.JUMP, self.pressedControlWhileRunning)
+            self.acceptOnce('control', self.pressedControlWhileRunning)
             self.acceptOnce('lcontrol', self.pressedControlWhileRunning)
 
     def setPropellerState(self, propState):
@@ -743,7 +752,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             return None
         else:
             return self.defaultFilter(request, args)
-        return None
+            return None
 
     def exitInactive(self):
         CogdoFlyingLocalPlayer.notify.debug("exit%s: '%s' -> '%s'" % (self.oldState, self.oldState, self.newState))
@@ -761,7 +770,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             return None
         else:
             return self.defaultFilter(request, args)
-        return None
+            return None
 
     def exitSpawn(self):
         CogdoFlyingLocalPlayer.notify.debug("exit%s: '%s' -> '%s'" % (self.oldState, self.oldState, self.newState))
@@ -769,7 +778,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
     def enterFreeFly(self):
         CogdoFlyingLocalPlayer.notify.info("enter%s: '%s' -> '%s'" % (self.newState, self.oldState, self.newState))
         self.setPropellerState(CogdoFlyingLocalPlayer.PropStates.Normal)
-        if self.oldState in ['Running', 'HitWhileRunning']:
+        if self.oldState in ('Running', 'HitWhileRunning'):
             self.toon.jumpStart()
             self.toon.setHpr(render, 0, 0, 0)
 
@@ -778,7 +787,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             return None
         else:
             return self.defaultFilter(request, args)
-        return None
+            return None
 
     def exitFreeFly(self):
         CogdoFlyingLocalPlayer.notify.debug("exit%s: '%s' -> '%s'" % (self.oldState, self.oldState, self.newState))
@@ -786,7 +795,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
     def enterFlyingUp(self):
         CogdoFlyingLocalPlayer.notify.info("enter%s: '%s' -> '%s'" % (self.newState, self.oldState, self.newState))
         self.setPropellerState(CogdoFlyingLocalPlayer.PropStates.Overdrive)
-        if self.oldState in ['Running']:
+        if self.oldState in ('Running',):
             self.toon.jumpStart()
             self.toon.setHpr(render, 0, 0, 0)
 
@@ -795,7 +804,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             return None
         else:
             return self.defaultFilter(request, args)
-        return None
+            return None
 
     def exitFlyingUp(self):
         CogdoFlyingLocalPlayer.notify.debug("exit%s: '%s' -> '%s'" % (self.oldState, self.oldState, self.newState))
@@ -812,7 +821,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             return None
         else:
             return self.defaultFilter(request, args)
-        return None
+            return None
 
     def exitHitWhileFlying(self):
         CogdoFlyingLocalPlayer.notify.debug("exit%s: '%s' -> '%s'" % (self.oldState, self.oldState, self.newState))
@@ -831,7 +840,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             return None
         else:
             return self.defaultFilter(request, args)
-        return None
+            return None
 
     def exitInWhirlwind(self):
         CogdoFlyingLocalPlayer.notify.debug("exit%s: '%s' -> '%s'" % (self.oldState, self.oldState, self.newState))
@@ -850,7 +859,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             return None
         else:
             return self.defaultFilter(request, args)
-        return None
+            return None
 
     def exitHitWhileRunning(self):
         CogdoFlyingLocalPlayer.notify.debug("exit%s: '%s' -> '%s'" % (self.oldState, self.oldState, self.newState))
@@ -861,14 +870,14 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
     def enterRunning(self):
         CogdoFlyingLocalPlayer.notify.info("enter%s: '%s' -> '%s'" % (self.newState, self.oldState, self.newState))
         self.toon.b_setAnimState('Happy', 1.0)
-        if self.oldState not in ['Spawn', 'HitWhileRunning', 'Inactive']:
+        if self.oldState not in ('Spawn', 'HitWhileRunning', 'Inactive'):
             self.toon.jumpHardLand()
             self._collideSfx.play()
         self.orthoWalk.start()
         self.setPropellerState(CogdoFlyingLocalPlayer.PropStates.Normal)
         self.ignore(base.JUMP)
         self.ignore('lcontrol')
-        self.acceptOnce(base.JUMP, self.pressedControlWhileRunning)
+        self.acceptOnce('control', self.pressedControlWhileRunning)
         self.acceptOnce('lcontrol', self.pressedControlWhileRunning)
 
     def filterRunning(self, request, args):
@@ -876,7 +885,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             return None
         else:
             return self.defaultFilter(request, args)
-        return None
+            return None
 
     def exitRunning(self):
         CogdoFlyingLocalPlayer.notify.debug("exit%s: '%s' -> '%s'" % (self.oldState, self.oldState, self.newState))
@@ -904,7 +913,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             return None
         else:
             return self.defaultFilter(request, args)
-        return None
+            return None
 
     def exitOutOfTime(self):
         CogdoFlyingLocalPlayer.notify.debug("exit%s: '%s' -> '%s'" % (self.oldState, self.oldState, self.newState))
@@ -924,7 +933,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             return None
         else:
             return self.defaultFilter(request, args)
-        return None
+            return None
 
     def exitDeath(self):
         CogdoFlyingLocalPlayer.notify.debug("exit%s: '%s' -> '%s'" % (self.oldState, self.oldState, self.newState))
@@ -944,7 +953,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             return None
         else:
             return self.defaultFilter(request, args)
-        return None
+            return None
 
     def exitWaitingForWin(self):
         CogdoFlyingLocalPlayer.notify.debug("exit%s: '%s' -> '%s'" % (self.oldState, self.oldState, self.newState))
@@ -962,7 +971,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             return None
         else:
             return self.defaultFilter(request, args)
-        return None
+            return None
 
     def exitWin(self):
         CogdoFlyingLocalPlayer.notify.debug("exit%s: '%s' -> '%s'" % (self.oldState, self.oldState, self.newState))
@@ -1025,7 +1034,7 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
 
         def spinPlayer(t):
             self.controlVelocity[2] = 1.0
-            angle = math.radians(t * (720.0 * 2 - 180))
+            angle = math.radians(t * 1260.0)
             self.toon.setPos(self.activeWhirlwind.model.getX(self.game.level.root) + math.cos(angle) * 2, self.activeWhirlwind.model.getY(self.game.level.root) + math.sin(angle) * 2, self.toon.getZ())
 
         def movePlayerBack(t):
@@ -1039,9 +1048,9 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
 
     def handleEnterEnemyHit(self, enemy, collPos):
         self.collPos = collPos
-        if self.state in ['FlyingUp', 'FreeFly']:
+        if self.state in ('FlyingUp', 'FreeFly'):
             self.request('HitWhileFlying')
-        elif self.state in ['Running']:
+        elif self.state in ('Running',):
             self.request('HitWhileRunning')
 
     def handleEnterFan(self, fan):
@@ -1073,10 +1082,9 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
         elif gatherable.type == Globals.Level.GatherableTypes.Propeller:
             self.handleEnterPropeller(gatherable)
         elif gatherable.type == Globals.Level.GatherableTypes.LaffPowerup:
-            self._getLaffSfx.play()
+            self.handleEnterLaffPowerup(gatherable)
         elif gatherable.type == Globals.Level.GatherableTypes.InvulPowerup:
-            self._getRedTapeSfx.play()
-            messenger.send(CogdoFlyingGuiManager.InvulnerableEventName)
+            self.handleEnterInvulPowerup(gatherable)
 
     def handleEnterMemo(self, gatherable):
         self.score += 1
@@ -1097,3 +1105,10 @@ class CogdoFlyingLocalPlayer(CogdoFlyingPlayer):
             self._guiMgr.update()
             self._refuelSfx.play()
             self._refuelSpinSfx.play(volume=0.15)
+
+    def handleEnterLaffPowerup(self, gatherable):
+        self._getLaffSfx.play()
+
+    def handleEnterInvulPowerup(self, gatherable):
+        messenger.send(CogdoFlyingGuiManager.InvulnerableEventName)
+        self._getRedTapeSfx.play()

@@ -20,7 +20,7 @@ class CogdoMazeLocalPlayer(CogdoMazePlayer):
         self.game = game
         self.maze = self.game.maze
         self._guiMgr = guiMgr
-        self.cameraMgr = CogdoMazeCameraManager(self.toon, self.maze, base.camera, render)
+        self.cameraMgr = CogdoMazeCameraManager(self.toon, self.maze, camera, render)
         self._proximityRadius = self.maze.cellWidth * Globals.CameraRemoteToonRadius
         orthoDrive = OrthoDrive(Globals.ToonRunSpeed, maxFrameMove=self.maze.cellWidth / 2, customCollisionCallback=self.maze.doOrthoCollisions, wantSound=True)
         self.orthoWalk = OrthoWalk(orthoDrive)
@@ -183,19 +183,21 @@ class CogdoMazeLocalPlayer(CogdoMazePlayer):
     def removeGag(self):
         if self.equippedGag is None:
             return
-        CogdoMazePlayer.removeGag(self)
-        self.throwPending = False
-        messenger.send(Globals.WaterCoolerShowEventName, [])
-        return
+        else:
+            CogdoMazePlayer.removeGag(self)
+            self.throwPending = False
+            messenger.send(Globals.WaterCoolerShowEventName, [])
+            return
 
     def controlKeyPressed(self):
         if self.game.finished or self.throwPending or self.getCurrentOrNextState() == 'Hit' or self.equippedGag == None:
             return
-        self.throwPending = True
-        heading = self.toon.getH()
-        pos = self.toon.getPos()
-        self.game.requestUseGag(pos.getX(), pos.getY(), heading)
-        return
+        else:
+            self.throwPending = True
+            heading = self.toon.getH()
+            pos = self.toon.getPos()
+            self.game.requestUseGag(pos.getX(), pos.getY(), heading)
+            return
 
     def completeThrow(self):
         self.clearCollisions()

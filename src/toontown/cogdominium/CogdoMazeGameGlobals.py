@@ -88,8 +88,8 @@ SuitData[SuitTypes.Boss] = {'dnaName': 'ms',
  'toonDamage': 3.0,
  'scale': 2.5,
  'hp': 2,
- 'memos': 0}
-SuitData[SuitTypes.FastMinion] = {'dnaName': 'nd',
+ 'memos': 5}
+SuitData[SuitTypes.FastMinion] = {'dnaName': 'gh',
  'cellWalkPeriod': 64,
  'toonDamage': 1.0,
  'scale': 1.3,
@@ -113,7 +113,7 @@ DropShakeEnabled = True
 BossShakeEnabled = True
 DropShakeStrength = 4.0
 DropMaxDistance = 20.0
-BossShakeStrength = 1.2
+BossShakeStrength = 1.6
 BossMaxDistance = 25.0
 BossShakeTime = 0.53
 BossStompSfxCutoff = 70.0
@@ -171,7 +171,7 @@ WaterCoolerCollisionName = 'WaterCooler_Collision'
 WaterCoolerShowEventName = 'CogdoMazeWaterCooler_Show'
 WaterCoolerHideEventName = 'CogdoMazeWaterCooler_Hide'
 AudioCutoff = 75.0
-MusicFiles = {'normal': 'phase_9/audio/bgm/CHQ_FACT_bg.ogg',
+MusicFiles = {'normal': 'phase_5/audio/bgm/suit-cogdo-sellbot.ogg',
  'timeRunningOut': 'phase_7/audio/bgm/encntr_suit_winning_indoor.ogg'}
 SfxFiles = {'toonHitByDrop': 'phase_5/audio/sfx/tt_s_ara_cmg_toonHit.ogg',
  'toonHit': 'phase_4/audio/sfx/MG_cannon_hit_dirt.ogg',
@@ -201,7 +201,7 @@ MapGuiFgColor = (0.5,
  0.5,
  0.5,
  1)
-MapGuiPos = (1.05, 0.0, -0.71)
+MapGuiPos = (-0.283, 0, 0.29)
 MapGuiScale = 0.225
 MapGuiSuitMarkerFlashColor = (1.0, 0.0, 0.0)
 MapGuiSuitMarkerSize = 0.075

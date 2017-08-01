@@ -43,18 +43,18 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
             return
         else:
             self.cleanedUp = 1
-        self.demand('Off')
-        self.detachNode()
-        self.toMagnetSoundInterval.finish()
-        self.hitFloorSoundInterval.finish()
-        self.hitBossSoundInterval.finish()
-        self.touchedBossSoundInterval.finish()
-        del self.toMagnetSoundInterval
-        del self.hitFloorSoundInterval
-        del self.hitBossSoundInterval
-        del self.touchedBossSoundInterval
-        self.craneGame = None
-        return
+            self.demand('Off')
+            self.detachNode()
+            self.toMagnetSoundInterval.finish()
+            self.hitFloorSoundInterval.finish()
+            self.hitBossSoundInterval.finish()
+            self.touchedBossSoundInterval.finish()
+            del self.toMagnetSoundInterval
+            del self.hitFloorSoundInterval
+            del self.hitBossSoundInterval
+            del self.touchedBossSoundInterval
+            self.craneGame = None
+            return
 
     def setupPhysics(self, name):
         an = ActorNode('%s-%s' % (name, self.doId))
@@ -126,10 +126,12 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
             vel.normalize()
             impact = vel[1]
             if impact >= self.getMinImpact():
+                print 'hit! %s' % impact
                 self.hitBossSoundInterval.start()
                 self.doHitBoss(impact)
             else:
                 self.touchedBossSoundInterval.start()
+                print '--not hard enough: %s' % impact
 
     def doHitBoss(self, impact):
         self.d_hitBoss(impact)
@@ -231,9 +233,8 @@ class DistCogdoCraneObject(DistributedSmoothNode.DistributedSmoothNode, FSM.FSM)
         if self.oldState == 'LocalGrabbed':
             if craneId == self.craneId:
                 return
-            else:
-                self.crane.dropObject(self)
-                self.prepareRelease()
+            self.crane.dropObject(self)
+            self.prepareRelease()
         self.avId = avId
         self.craneId = craneId
         self.crane = self.cr.doId2do.get(craneId)

@@ -15,7 +15,7 @@ import CogdoUtil
 
 class CogdoExecutiveSuiteIntro(CogdoGameMovie):
     notify = DirectNotifyGlobal.directNotify.newCategory('CogdoExecutiveSuiteIntro')
-    introDuration = 7
+    introDuration = 4
     cameraMoveDuration = 3
 
     def __init__(self, shopOwner):
@@ -50,8 +50,6 @@ class CogdoExecutiveSuiteIntro(CogdoGameMovie):
         for part in suit.getHeadParts():
             part.hide()
 
-        suit.loop('neutral')
-
     def load(self):
         self.notify.debug('load()')
         CogdoGameMovie.load(self)
@@ -81,6 +79,7 @@ class CogdoExecutiveSuiteIntro(CogdoGameMovie):
         self.toonHead.setPosHprScale(-0.73, 0, -1.27, 180, 0, 0, 0.18, 0.18, 0.18)
         self.toonHead.reparentTo(hidden)
         self.toonHead.startBlink()
+        self.toonHead.setBin('gui-popup', 100)
         self.clipPlane = self.toonHead.attachNewNode(PlaneNode('clip'))
         self.clipPlane.node().setPlane(Plane(0, 0, 1, 0))
         self.clipPlane.setPos(0, 0, 2.45)
@@ -103,12 +102,12 @@ class CogdoExecutiveSuiteIntro(CogdoGameMovie):
             base.setCellsActive(base.bottomCells + base.leftCells + base.rightCells, 1)
             self._stopUpdateTask()
 
-        self._ival = Sequence(Func(start), Func(self.displayLine, dialogue), Func(showShopOwner), ParallelEndTogether(base.camera.posInterval(self.cameraMoveDuration, Point3(8, 0, 13), blendType='easeInOut'), base.camera.hprInterval(0.5, self._camHelperNode.getHpr(), blendType='easeInOut')), Wait(self.introDuration), Func(end))
+        self._ival = Sequence(Func(start), Func(self.displayLine, dialogue), Func(showShopOwner), ParallelEndTogether(camera.posInterval(self.cameraMoveDuration, Point3(8, 0, 13), blendType='easeInOut'), camera.hprInterval(0.5, self._camHelperNode.getHpr(), blendType='easeInOut')), Wait(self.introDuration), Func(end))
         self._startUpdateTask()
         return
 
     def _setCamTarget(self, targetNP, distance, offset = Point3(0, 0, 0), angle = Point3(0, 0, 0)):
-        base.camera.wrtReparentTo(render)
+        camera.wrtReparentTo(render)
         self._camTarget = targetNP
         self._camOffset = offset
         self._camAngle = angle

@@ -124,6 +124,7 @@ want-talkative-tyler #f
 want-butterflies #f
 want-estate-fisherman #t
 want-fireworks #t
+cogdo-want-barrel-room #t 
 
 # Developer options:
 want-dev #f

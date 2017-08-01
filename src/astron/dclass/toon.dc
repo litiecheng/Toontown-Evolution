@@ -622,6 +622,7 @@ dclass DistributedToon : DistributedPlayer {
   flagAv(uint32, uint16, string []) airecv ownsend;
   setAnimalSound(uint8 index) ram broadcast ownrecv;
   attemptDeleteNPCFriend(uint32 npcId) ownsend airecv;
+  setEmblems(uint32[] = [0, 0]) required ownrecv db;
 };
 
 dclass DistributedCCharBase : DistributedObject {

@@ -105,3 +105,7 @@
 
 2.0.2:
 1. Bug Fix for Doodles
+
+2.1.0:
+1. Field Offices
+

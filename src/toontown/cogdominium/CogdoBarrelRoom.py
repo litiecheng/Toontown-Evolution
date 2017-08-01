@@ -1,6 +1,5 @@
 import random
 from pandac.PandaModules import *
-from panda3d.core import Fog
 from direct.interval.IntervalGlobal import *
 from direct.directnotify import DirectNotifyGlobal
 from toontown.toonbase import ToontownGlobals, ToontownTimer
@@ -38,8 +37,6 @@ class CogdoBarrelRoom:
         self.model.setPos(*CogdoBarrelRoomConsts.BarrelRoomModelPos)
         self.model.reparentTo(render)
         self.model.stash()
-        self.dummyElevInNode = self.model.attachNewNode('elevator-in')
-        self.dummyElevInNode.hide()
         self.entranceNode = self.model.attachNewNode('door-entrance')
         self.entranceNode.setPos(0, -65, 0)
         self.nearBattleNode = self.model.attachNewNode('near-battle')
@@ -50,6 +47,11 @@ class CogdoBarrelRoom:
         self.fog = Fog('barrel-room-fog')
         self.fog.setColor(CogdoBarrelRoomConsts.BarrelRoomFogColor)
         self.fog.setLinearRange(*CogdoBarrelRoomConsts.BarrelRoomFogLinearRange)
+        self.brBarrel = render.attachNewNode('@@CogdoBarrels')
+        for i in range(len(CogdoBarrelRoomConsts.BarrelProps)):
+            self.bPath = self.brBarrel.attachNewNode('%s%s'% (CogdoBarrelRoomConsts.BarrelPathName, i))
+            self.bPath.setPos(CogdoBarrelRoomConsts.BarrelProps[i]['pos'])
+            self.bPath.setH(CogdoBarrelRoomConsts.BarrelProps[i]['heading'])
         self._isLoaded = True
 
     def unload(self):
@@ -62,9 +64,10 @@ class CogdoBarrelRoom:
         if self.rewardUi:
             self.rewardUi.destroy()
             self.rewardUi = None
-        if self.fog:
-            render.setFogOff()
-            del self.fog
+        if hasattr(self, 'fog'):
+            if self.fog:
+                render.setFogOff()
+                del self.fog
         taskMgr.remove(self.rewardUiTaskName)
         taskMgr.remove(self.rewardCameraTaskName)
         self._isLoaded = False
@@ -76,17 +79,19 @@ class CogdoBarrelRoom:
     def show(self):
         if not self.cogdoBarrelsNode:
             self.cogdoBarrelsNode = render.find('**/@@CogdoBarrels')
-            self.cogdoBarrelsNode.reparentTo(self.model)
-            self.cogdoBarrelsNode.unstash()
+            if not self.cogdoBarrelsNode.isEmpty():
+                self.cogdoBarrelsNode.reparentTo(self.model)
+                self.cogdoBarrelsNode.unstash()
+        base.localAvatar.b_setAnimState('neutral')
         self.defaultFar = base.camLens.getFar()
         base.camLens.setFar(CogdoBarrelRoomConsts.BarrelRoomCameraFar)
+        base.camLens.setMinFov(ToontownGlobals.DefaultCameraFov/(4./3.))
         self.showBattleAreaLight(True)
         render.setFog(self.fog)
         self.model.unstash()
 
     def hide(self):
         self.model.stash()
-        render.setFogOff()
         if self.defaultFar is not None:
             base.camLens.setFar(self.defaultFar)
         return
@@ -104,11 +109,11 @@ class CogdoBarrelRoom:
         self.timer.stash()
 
     def placeToonsAtEntrance(self, toons):
-        for i in xrange(len(toons)):
+        for i in range(len(toons)):
             toons[i].setPosHpr(self.entranceNode, *CogdoBarrelRoomConsts.BarrelRoomPlayerSpawnPoints[i])
 
     def placeToonsNearBattle(self, toons):
-        for i in xrange(len(toons)):
+        for i in range(len(toons)):
             toons[i].setPosHpr(self.nearBattleNode, *CogdoBarrelRoomConsts.BarrelRoomPlayerSpawnPoints[i])
 
     def showBattleAreaLight(self, visible = True):
@@ -125,7 +130,7 @@ class CogdoBarrelRoom:
         trackName = '__introBarrelRoom-%d' % avatar.doId
         track = Parallel(name=trackName)
         track.append(self.__stomperIntervals())
-        track.append(Sequence(Func(base.camera.reparentTo, render), Func(base.camera.setPosHpr, self.model, -20.0, -87.9, 12.0, -30, 0, 0), Func(base.transitions.irisIn, 0.5), Wait(1.0), LerpHprInterval(base.camera, duration=2.0, startHpr=Vec3(-30, 0, 0), hpr=Vec3(0, 0, 0), blendType='easeInOut'), Wait(2.5), LerpHprInterval(base.camera, duration=3.0, startHpr=Vec3(0, 0, 0), hpr=Vec3(-45, 0, 0), blendType='easeInOut'), Wait(2.5)))
+        track.append(Sequence(Func(camera.reparentTo, render), Func(camera.setPosHpr, self.model, -20.0, -87.9, 12.0, -30, 0, 0), Func(base.transitions.irisIn, 0.5), Wait(1.0), LerpHprInterval(camera, duration=2.0, startHpr=Vec3(-30, 0, 0), hpr=Vec3(0, 0, 0), blendType='easeInOut'), Wait(2.5), LerpHprInterval(camera, duration=3.0, startHpr=Vec3(0, 0, 0), hpr=Vec3(-45, 0, 0), blendType='easeInOut'), Wait(2.5)))
         track.delayDelete = DelayDelete.DelayDelete(avatar, 'introBarrelRoomTrack')
         track.setDoneEvent(trackName)
         return (track, trackName)
@@ -156,13 +161,13 @@ class CogdoBarrelRoom:
 
     def __rewardCamera(self):
         trackName = 'cogdoBarrelRoom-RewardCamera'
-        track = Sequence(Func(base.camera.reparentTo, render), Func(base.camera.setPosHpr, self.model, 0, 0, 11.0, 0, -14, 0), Func(self.showBattleAreaLight, False), name=trackName)
+        track = Sequence(Func(camera.reparentTo, render), Func(camera.setPosHpr, self.model, 0, 0, 11.0, 0, -14, 0), Func(self.showBattleAreaLight, False), name=trackName)
         return (track, trackName)
 
-    def showRewardUi(self, results, callback = None):
+    def showRewardUi(self, callback = None):
         track, trackName = self.__rewardCamera()
         if CogdoBarrelRoomConsts.ShowRewardUI:
-            self.rewardUi.setRewards(results)
+            self.rewardUi.setRewards()
             self.rewardUi.unstash()
         taskMgr.doMethodLater(CogdoBarrelRoomConsts.RewardUiTime, self.__rewardUiTimeout, self.rewardUiTaskName, extraArgs=[callback])
         return (track, trackName)

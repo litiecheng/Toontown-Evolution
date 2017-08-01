@@ -28,6 +28,7 @@ class CogdoFlyingGame(DirectObject):
         self.index2LegalEagle = {}
         self.legalEagles = []
         self.isGameComplete = False
+        self.localPlayer = None
         self._hints = {'targettedByEagle': False,
          'invulnerable': False}
 
@@ -160,13 +161,6 @@ class CogdoFlyingGame(DirectObject):
         self.acceptOnce(CogdoFlyingLocalPlayer.RanOutOfTimeEventName, self.handleLocalPlayerRanOutOfTime)
         self.__startUpdateTask()
         self.isGameComplete = False
-        if __debug__ and base.config.GetBool('schellgames-dev', True):
-            self.acceptOnce('end', self.guiMgr.forceTimerDone)
-
-            def toggleFog():
-                self.levelFog.setVisible(not self.levelFog.isVisible())
-
-            self.accept('home', toggleFog)
         for eagle in self.legalEagles:
             eagle.gameStart(self.distGame.getStartTime())
 
@@ -175,7 +169,7 @@ class CogdoFlyingGame(DirectObject):
 
         self.guiMgr.onstage()
         if not Globals.Dev.InfiniteTimeLimit:
-            self.guiMgr.startTimer(Globals.Gameplay.SecondsUntilGameOver, self._handleTimerExpired, keepHidden=True)
+            self.guiMgr.startTimer(Globals.Gameplay.SecondsUntilGameOver, self._handleTimerExpired)
 
     def exit(self):
         self.ignore(CogdoFlyingObstacle.EnterEventName)
@@ -242,7 +236,7 @@ class CogdoFlyingGame(DirectObject):
     def handleRemoteAction(self, action, data):
         if data != self.localPlayer.toon.doId:
             if action == Globals.AI.GameActions.GotoWinState:
-                if self.localPlayer.state in ['WaitingForWin']:
+                if self.localPlayer.state in ('WaitingForWin',):
                     self.localPlayer.request('Win')
 
     def toonDied(self, toonId, elapsedTime):
@@ -299,20 +293,22 @@ class CogdoFlyingGame(DirectObject):
                 if gatherable.type in [Globals.Level.GatherableTypes.InvulPowerup]:
                     if player.toon.isLocal():
                         self.audioMgr.playMusic('invul')
+                taskMgr.doMethodLater(30, lambda task: self.debuffPowerup(toonId, gatherable.type, elapsedTime), 'gatherable-timeout')
         else:
             self.notify.warning('Trying to pickup gatherable nonetype:%s' % pickupNum)
         return
 
     def debuffPowerup(self, toonId, pickupType, elapsedTime):
         self.notify.debugCall()
-        player = self.toonId2Player[toonId]
-        if player.isBuffActive(pickupType):
-            if pickupType in [Globals.Level.GatherableTypes.InvulPowerup]:
-                if self.guiMgr.isTimeRunningOut():
-                    self.audioMgr.playMusic('timeRunningOut')
-                else:
-                    self.audioMgr.playMusic('normal')
-                player.handleDebuffPowerup(pickupType, elapsedTime)
+        if toonId in self.toonId2Player:
+            player = self.toonId2Player[toonId]
+            if player.isBuffActive(pickupType):
+                if pickupType in [Globals.Level.GatherableTypes.InvulPowerup]:
+                    if self.guiMgr.isTimeRunningOut():
+                        self.audioMgr.playMusic('timeRunningOut')
+                    else:
+                        self.audioMgr.playMusic('normal')
+                    player.handleDebuffPowerup(pickupType, elapsedTime)
 
     def handleLocalToonEnterLegalEagle(self, eagle, collEntry):
         if not self.localPlayer.isEnemyHitting() and not self.localPlayer.isInvulnerable():
@@ -346,7 +342,7 @@ class CogdoFlyingGame(DirectObject):
         taskMgr.remove(CogdoFlyingGame.UpdateTaskName)
 
     def handleTimeRunningOut(self):
-        if self.localPlayer.state not in ['WaitingForWin']:
+        if self.localPlayer.state not in ('WaitingForWin',):
             self.audioMgr.playMusic('timeRunningOut')
         self.guiMgr.presentTimerGui()
         self.guiMgr.setTemporaryMessage(TTLocalizer.CogdoFlyingGameTimeIsRunningOut)
@@ -403,7 +399,7 @@ class CogdoFlyingGame(DirectObject):
         if index in self.index2LegalEagle:
             legalEagle = self.index2LegalEagle[index]
             if not self.localPlayer.isLegalEagleInterestRequestSent(index) and not self.localPlayer.isLegalEagleTarget():
-                if self.localPlayer.state in ['WaitingForWin', 'Win']:
+                if self.localPlayer.state in ('WaitingForWin', 'Win'):
                     return
                 self.localPlayer.setLegalEagleInterestRequest(index)
                 self.distGame.d_sendRequestAction(Globals.AI.GameActions.RequestEnterEagleInterest, index)

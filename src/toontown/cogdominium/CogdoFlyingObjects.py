@@ -1,6 +1,5 @@
 import random
 from pandac.PandaModules import *
-from panda3d.core import Fog
 from direct.interval.IntervalGlobal import Sequence, Func, Parallel, Wait, LerpHprInterval, LerpScaleInterval, LerpFunctionInterval
 from otp.otpbase import OTPGlobals
 from toontown.toonbase import ToontownGlobals
@@ -243,7 +242,8 @@ class CogdoFlyingPowerup(CogdoFlyingGatherable):
             self._model.setAlphaScale(0.5)
             if Globals.Level.AddSparkleToPowerups:
                 self.f = self.find('**/particleEffect_sparkles')
-                self.f.hide()
+                if not self.f.isEmpty():
+                    self.f.hide()
 
     def pickUp(self, toon, elapsedSeconds = 0.0):
         if self.wasPickedUpByToon(toon) == True:
@@ -326,7 +326,8 @@ class CogdoFlyingPropeller(CogdoFlyingGatherable):
             if len(self.activePropellers) == 0:
                 self._wasPickedUp = True
             return prop
-        return None
+        else:
+            return None
 
     def isPropeller(self):
         if len(self.activePropellers) > 0:
@@ -340,6 +341,7 @@ class CogdoFlyingLevelFog:
     def __init__(self, level, color = Globals.Level.FogColor):
         self._level = level
         self.color = color
+        self.defaultFar = None
         fogDistance = self._level.quadLengthUnits * max(1, self._level.quadVisibiltyAhead * 0.2)
         self.fog = Fog('RenderFog')
         self.fog.setColor(self.color)
@@ -347,11 +349,18 @@ class CogdoFlyingLevelFog:
         self._visible = False
         self._clearColor = Vec4(base.win.getClearColor())
         self._clearColor.setW(1.0)
+        self.defaultFar = base.camLens.getFar()
+        base.camLens.setFar(Globals.Camera.GameCameraFar)
+        base.setBackgroundColor(self.color)
+        return
 
     def destroy(self):
         self.setVisible(False)
         if hasattr(self, 'fog'):
             del self.fog
+        if self.defaultFar is not None:
+            base.camLens.setFar(self.defaultFar)
+        return
 
     def isVisible(self):
         return self._visible
@@ -425,7 +434,7 @@ class CogdoFlyingPlatform:
     def getSpawnPosForPlayer(self, playerNum, parent):
         offset = Globals.Level.PlatformType2SpawnOffset[self._type]
         spawnLoc = self._model.find('**/spawn_loc')
-        x = (playerNum - 2.0) % 2 * offset
+        x = (playerNum - 3.0) % 2 * offset
         y = (playerNum - 1.0) % 2 * offset
         if not spawnLoc.isEmpty():
             spawnPos = spawnLoc.getPos(parent) + Vec3(x, y, 0.0)

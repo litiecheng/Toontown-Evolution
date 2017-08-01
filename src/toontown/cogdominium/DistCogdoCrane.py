@@ -1,20 +1,17 @@
-from direct.distributed import DistributedObject
+from direct.gui.DirectGui import *
+from pandac.PandaModules import *
+from direct.interval.IntervalGlobal import *
 from direct.distributed.ClockDelta import *
 from direct.fsm import FSM
-from direct.gui.DirectGui import *
-from direct.interval.IntervalGlobal import *
-from direct.showbase import PythonUtil
+from direct.distributed import DistributedObject
 from direct.showutil import Rope
+from direct.showbase import PythonUtil
 from direct.task import Task
-from pandac.PandaModules import *
-import random
-
+from toontown.toonbase import ToontownGlobals
+from toontown.toonbase import TTLocalizer
 from otp.otpbase import OTPGlobals
 from toontown.cogdominium import CogdoCraneGameConsts as GameConsts
-from toontown.nametag import NametagGlobals
-from toontown.toonbase import TTLocalizer
-from toontown.toonbase import ToontownGlobals
-
+import random
 
 class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistCogdoCrane')
@@ -235,7 +232,7 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
             self.physicsActivated = 0
 
     def __straightenCable(self):
-        for linkNum in xrange(self.numLinks):
+        for linkNum in range(self.numLinks):
             an, anp, cnp = self.activeLinks[linkNum]
             an.getPhysicsObject().setVelocity(0, 0, 0)
             z = float(linkNum + 1) / float(self.numLinks) * self.cableLength
@@ -258,7 +255,7 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
         self.links = []
         self.links.append((self.topLink, Point3(0, 0, 0)))
         anchor = self.topLink
-        for linkNum in xrange(self.numLinks):
+        for linkNum in range(self.numLinks):
             anchor = self.__makeLink(anchor, linkNum)
 
         self.collisions.stash()
@@ -516,7 +513,7 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
         self.arm.setH(limitH)
         y = self.crane.getY() + yd * self.slideSpeed * dt
         limitY = max(min(y, self.craneMaxY), self.craneMinY)
-        atLimit = (limitH != h or limitY != y)
+        atLimit = limitH != h or limitY != y
         if atLimit:
             now = globalClock.getFrameTime()
             x = math.sin(now * 79) * 0.05
@@ -554,7 +551,7 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
     def startFlicker(self):
         self.magnetSoundInterval.start()
         self.lightning = []
-        for i in xrange(4):
+        for i in range(4):
             t = float(i) / 3.0 - 0.5
             l = self.craneGame.lightning.copyTo(self.gripper)
             l.setScale(random.choice([1, -1]), 1, 5)
@@ -603,21 +600,22 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
     def grabObject(self, obj):
         if self.state == 'Off':
             return
-        if self.heldObject != None:
-            self.releaseObject()
-        self.__deactivateSniffer()
-        obj.wrtReparentTo(self.gripper)
-        if obj.lerpInterval:
-            obj.lerpInterval.finish()
-        obj.lerpInterval = Parallel(obj.posInterval(ToontownGlobals.CashbotBossToMagnetTime, Point3(*obj.grabPos)), obj.quatInterval(ToontownGlobals.CashbotBossToMagnetTime, VBase3(obj.getH(), 0, 0)), obj.toMagnetSoundInterval)
-        obj.lerpInterval.start()
-        self.heldObject = obj
-        self.handler.setDynamicFrictionCoef(obj.craneFrictionCoef)
-        self.slideSpeed = obj.craneSlideSpeed
-        self.rotateSpeed = obj.craneRotateSpeed
-        if self.avId == localAvatar.doId and not self.magnetOn:
-            self.releaseObject()
-        return
+        else:
+            if self.heldObject != None:
+                self.releaseObject()
+            self.__deactivateSniffer()
+            obj.wrtReparentTo(self.gripper)
+            if obj.lerpInterval:
+                obj.lerpInterval.finish()
+            obj.lerpInterval = Parallel(obj.posInterval(ToontownGlobals.CashbotBossToMagnetTime, Point3(*obj.grabPos)), obj.quatInterval(ToontownGlobals.CashbotBossToMagnetTime, VBase3(obj.getH(), 0, 0)), obj.toMagnetSoundInterval)
+            obj.lerpInterval.start()
+            self.heldObject = obj
+            self.handler.setDynamicFrictionCoef(obj.craneFrictionCoef)
+            self.slideSpeed = obj.craneSlideSpeed
+            self.rotateSpeed = obj.craneRotateSpeed
+            if self.avId == localAvatar.doId and not self.magnetOn:
+                self.releaseObject()
+            return
 
     def dropObject(self, obj):
         if obj.lerpInterval:
@@ -683,7 +681,7 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
         self.armSmoother.setPos(self.crane.getPos())
         self.armSmoother.setHpr(self.arm.getHpr())
         self.armSmoother.setPhonyTimestamp()
-        for linkNum in xrange(self.numLinks):
+        for linkNum in range(self.numLinks):
             smoother = self.linkSmoothers[linkNum]
             an, anp, cnp = self.activeLinks[linkNum]
             smoother.clearPositions(0)
@@ -692,7 +690,7 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
 
     def doSmoothTask(self, task):
         self.armSmoother.computeAndApplySmoothPosHpr(self.crane, self.arm)
-        for linkNum in xrange(self.numLinks):
+        for linkNum in range(self.numLinks):
             smoother = self.linkSmoothers[linkNum]
             anp = self.activeLinks[linkNum][1]
             smoother.computeAndApplySmoothPos(anp)
@@ -719,7 +717,7 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
             self.armSmoother.applySmoothPos(self.crane)
             self.armSmoother.applySmoothHpr(self.arm)
         self.armSmoother.clearPositions(1)
-        for linkNum in xrange(self.numLinks):
+        for linkNum in range(self.numLinks):
             smoother = self.linkSmoothers[linkNum]
             an, anp, cnp = self.activeLinks[linkNum]
             if smoother.getLatestPosition():
@@ -735,7 +733,7 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
             self.armSmoother.setH(h)
             self.armSmoother.setTimestamp(local)
             self.armSmoother.markPosition()
-            for linkNum in xrange(self.numLinks):
+            for linkNum in range(self.numLinks):
                 smoother = self.linkSmoothers[linkNum]
                 lp = links[linkNum]
                 smoother.setPos(*lp)
@@ -749,7 +747,7 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
     def d_sendCablePos(self):
         timestamp = globalClockDelta.getFrameNetworkTime()
         links = []
-        for linkNum in xrange(self.numLinks):
+        for linkNum in range(self.numLinks):
             an, anp, cnp = self.activeLinks[linkNum]
             p = anp.getPos()
             links.append((p[0], p[1], p[2]))
@@ -794,8 +792,8 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
         self.grabTrack = self.makeToonGrabInterval(toon)
         if avId == localAvatar.doId:
             self.craneGame.toCraneMode()
-            base.camera.reparentTo(self.hinge)
-            base.camera.setPosHpr(0, -20, -5, 0, -20, 0)
+            camera.reparentTo(self.hinge)
+            camera.setPosHpr(0, -20, -5, 0, -20, 0)
             self.tube.stash()
             localAvatar.setPosHpr(self.controls, 0, 0, 0, 0, 0, 0)
             localAvatar.sendCurrentPosition()
@@ -823,9 +821,9 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
             self.__disableControlInterface()
             self.__deactivatePhysics()
             self.tube.unstash()
-            base.camera.reparentTo(base.localAvatar)
-            base.camera.setPos(base.localAvatar.cameraPositions[0][0])
-            base.camera.setHpr(0, 0, 0)
+            camera.reparentTo(base.localAvatar)
+            camera.setPos(base.localAvatar.cameraPositions[0][0])
+            camera.setHpr(0, 0, 0)
         self.__straightenCable()
 
     def enterFree(self):
@@ -873,15 +871,3 @@ class DistCogdoCrane(DistributedObject.DistributedObject, FSM.FSM):
     def exitMovie(self):
         self.__deactivatePhysics()
         self.__straightenCable()
-
-    if __dev__:
-
-        def _handleEmptyFrictionCoefChanged(self, coef):
-            self.handler.setDynamicFrictionCoef(coef)
-
-        def _handleRopeLinkMassChanged(self, mass):
-            for an, anp, cnp in self.activeLinks:
-                an.getPhysicsObject().setMass(mass)
-
-        def _handleMagnetMassChanged(self, mass):
-            pass

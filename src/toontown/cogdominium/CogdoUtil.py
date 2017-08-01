@@ -1,4 +1,6 @@
 from pandac.PandaModules import ColorBlendAttrib
+from toontown.suit import SuitDNA
+import random
 ModelPhase = 5
 ModelTypes = {'animation': 'a',
  'model': 'm',
@@ -8,6 +10,26 @@ ModelGroups = {'area': 'ara',
 Games = {'flying': 'cfg',
  'maze': 'cmg',
  'shared': 'csa'}
+
+def getAllowedTracks():
+    tracks = []
+
+    if config.GetBool('want-sellbot-cogdo', True):
+        tracks.append('s')
+    if config.GetBool('want-lawbot-cogdo', True):
+        tracks.append('l')
+
+    return tracks
+
+def getCogdoTrack(suitName):
+    tracks = getAllowedTracks()
+    
+    if not tracks:
+        return None
+
+    track = SuitDNA.getSuitDept(suitName)
+    
+    return track if track in tracks else random.choice(tracks)
 
 def loadFlyingModel(baseName, type = 'model', group = 'area'):
     return loadModel(baseName, 'flying', type=type, group=group)
@@ -35,6 +57,7 @@ def loadModel(baseName, game = 'shared', type = 'model', group = 'area'):
 
 class VariableContainer:
     pass
+
 
 class DevVariableContainer:
 
@@ -69,7 +92,7 @@ class CogdoGameMovie:
         textNode.setFont(ToontownGlobals.getToonFont())
         self._dialogueLabel = aspect2d.attachNewNode(textNode)
         self._dialogueLabel.setScale(0.06, 0.06, 0.06)
-        self._dialogueLabel.setPos(0.32, 0, -0.75)
+        self._dialogueLabel.setPos(0.32, 0, -0.73)
         self._dialogueLabel.reparentTo(hidden)
 
     def unload(self):
@@ -120,9 +143,9 @@ def rotateTable(table, angle):
         t = []
         width = len(table[0])
         height = len(table)
-        for j in xrange(width):
+        for j in range(width):
             row = []
-            for i in xrange(height):
+            for i in range(height):
                 row.append(table[height - 1 - i][j])
 
             t.append(row)
@@ -137,9 +160,9 @@ def rotateTable(table, angle):
         t = []
         width = len(table[0])
         height = len(table)
-        for j in xrange(width):
+        for j in range(width):
             row = []
-            for i in xrange(height):
+            for i in range(height):
                 row.append(table[i][width - 1 - j])
 
             t.append(row)

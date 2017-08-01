@@ -16,7 +16,7 @@ from direct.particles import ParticleEffect
 from direct.particles import Particles
 from direct.particles import ForceGroup
 
-class CogdoFlyingObtacleFactory:
+class CogdoFlyingObstacleFactory:
 
     def __init__(self):
         self._index = -1
@@ -29,8 +29,9 @@ class CogdoFlyingObtacleFactory:
         self._fanModel.removeNode()
         del self._fanModel
         if Globals.Level.AddParticlesToStreamers:
-            self.f.cleanup()
-            del self.f
+            if hasattr(self, 'f'):
+                self.f.cleanup()
+                del self.f
 
     def createFan(self):
         self._index += 1
@@ -234,12 +235,14 @@ class CogdoFlyingMinion(CogdoFlyingObstacle):
         self.prop = None
         self.suit = Suit.Suit()
         d = SuitDNA.SuitDNA()
-        d.newSuit(Globals.Gameplay.MinionDnaName)
+        d.newSuit(random.choice(Globals.Gameplay.MinionDnaName))
         self.suit.setDNA(d)
         self.suit.setScale(Globals.Gameplay.MinionScale)
         swapAvatarShadowPlacer(self.suit, 'minion-%sShadowPlacer' % index)
         self.mopathNodePath = NodePath('mopathNodePath')
         self.suit.reparentTo(self.mopathNodePath)
+        self.suit.nametag3d.stash()
+        self.suit.nametag.destroy()
         CogdoFlyingObstacle.__init__(self, Globals.Level.ObstacleTypes.Minion, index, self.mopathNodePath, collSolid, motionPath=motionPath, motionPattern=CogdoFlyingObstacle.MotionTypes.Loop, blendMotion=False, instanceModel=False)
         self.lastPos = None
         self.suit.loop('neutral')
