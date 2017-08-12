@@ -13,7 +13,7 @@ __all__ = ['indent',
 'bound', 'clamp', 'lerp', 'average', 'addListsByValue',
 'boolEqual', 'lineupPos', 'formatElapsedSeconds', 'solveQuadratic',
 'stackEntryInfo', 'lineInfo', 'callerInfo', 'lineTag',
-'findPythonModule', 'mostDerivedLast', 'clampScalar', 
+'findPythonModule', 'mostDerivedLast',
 'weightedChoice', 'randFloat', 'normalDistrib',
 'weightedRand', 'randUint31', 'randInt32', 'randUint32',
 'SerialNumGen', 'serialNum', 'uniqueName', 'Enum', 'Singleton',
@@ -1112,23 +1112,6 @@ def findPythonModule(module):
             return pathname
 
     return None
-
-def clampScalar(value, a, b):
-    # calling this ought to be faster than calling both min and max
-    if a < b:
-        if value < a:
-            return a
-        elif value > b:
-            return b
-        else:
-            return value
-    else:
-        if value < b:
-            return b
-        elif value > a:
-            return a
-        else:
-            return value
 
 def weightedChoice(choiceList, rng=random.random, sum=None):
     """given a list of (weight, item) pairs, chooses an item based on the
@@ -2945,7 +2928,6 @@ __builtin__.appendStr = appendStr
 __builtin__.bound = bound
 __builtin__.clamp = clamp
 __builtin__.lerp = lerp
-__builtin__.clampScalar = clampScalar
 __builtin__.makeList = makeList
 __builtin__.makeTuple = makeTuple
 __builtin__.printStack = printStack

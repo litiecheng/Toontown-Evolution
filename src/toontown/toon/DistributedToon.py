@@ -402,6 +402,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
                 Toon.MonkeyDialogueArray,
                 Toon.BearDialogueArray,
                 Toon.PigDialogueArray,
+                Toon.DeerDialogueArray,
             ]
             return dialogueArrays[self.animalSound]
         return Toon.Toon.getDialogueArray(self, *args)

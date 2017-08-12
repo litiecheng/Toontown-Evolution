@@ -47,6 +47,7 @@ DuckDialogueArray = []
 MonkeyDialogueArray = []
 BearDialogueArray = []
 PigDialogueArray = []
+DeerDialogueArray = []
 LegsAnimDict = {}
 TorsoAnimDict = {}
 HeadAnimDict = {}
@@ -374,6 +375,11 @@ def loadDialog():
     for file in pigDialogueFiles:
         PigDialogueArray.append(base.loadSfx(loadPath + file + '.ogg'))
 
+    deerDialogueFiles = ('AV_deer_short', 'AV_deer_med', 'AV_deer_long', 'AV_deer_question', 'AV_deer_exclaim', 'AV_deer_howl')
+    global DeerDialogueArray
+    for file in deerDialogueFiles:
+        DeerDialogueArray.append(base.loadSfx(loadPath + file + '.ogg'))
+
 def unloadDialog():
     global CatDialogueArray
     global PigDialogueArray
@@ -384,6 +390,7 @@ def unloadDialog():
     global DogDialogueArray
     global HorseDialogueArray
     global MonkeyDialogueArray
+    global DeerDialogueArray
     DogDialogueArray = []
     CatDialogueArray = []
     HorseDialogueArray = []
@@ -393,6 +400,7 @@ def unloadDialog():
     MonkeyDialogueArray = []
     BearDialogueArray = []
     PigDialogueArray = []
+    DeerDialogueArray = []
 
 class Toon(Avatar.Avatar, ToonHead):
     notify = DirectNotifyGlobal.directNotify.newCategory('Toon')
@@ -1183,6 +1191,8 @@ class Toon(Avatar.Avatar, ToonHead):
             dialogueArray = BearDialogueArray
         elif animalType == 'pig':
             dialogueArray = PigDialogueArray
+        elif animalType == 'deer':
+            dialogueArray = DeerDialogueArray
         else:
             dialogueArray = None
         return dialogueArray

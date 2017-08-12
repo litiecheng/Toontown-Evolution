@@ -1,4 +1,4 @@
-from direct.showbase.PythonUtil import contains, lerp
+from direct.showbase.PythonUtil import contains, lerp, bound
 from direct.distributed import DistributedObjectAI
 from direct.directnotify import DirectNotifyGlobal
 from toontown.pets import PetTraits, PetTricks
@@ -318,10 +318,6 @@ class DistributedPetProxyAI(DistributedObjectAI.DistributedObjectAI):
         self.d_setTrickAptitudes(aptitudes)
 
     def d_setTrickAptitudes(self, aptitudes):
-        if __dev__:
-            for aptitude in aptitudes:
-                pass
-
         while len(aptitudes) < len(PetTricks.Tricks) - 1:
             aptitudes.append(0.0)
 
@@ -341,7 +337,7 @@ class DistributedPetProxyAI(DistributedObjectAI.DistributedObjectAI):
         return self.trickAptitudes[trickId]
 
     def setTrickAptitude(self, trickId, aptitude, send = 1):
-        aptitude = min(max(aptitude, 0.0), 1.0)
+        aptitude = bound(aptitude, 0.0, 1.0)
         aptitudes = self.trickAptitudes
         while len(aptitudes) - 1 < trickId:
             aptitudes.append(0.0)
@@ -397,7 +393,7 @@ class DistributedPetProxyAI(DistributedObjectAI.DistributedObjectAI):
     def addToMood(self, component, delta):
         value = self.mood.getComponent(component)
         value += delta
-        self.setMoodComponent(component, min(max(value, 0.0), 1.0))
+        self.setMoodComponent(component, bound(value, 0.0, 1.0))
 
     def lerpMood(self, component, factor):
         curVal = self.mood.getComponent(component)

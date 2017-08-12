@@ -1878,14 +1878,12 @@ ChatGarblerDog = ['woof', 'arf', 'rruff']
 ChatGarblerCat = ['meow', 'mew']
 ChatGarblerMouse = ['squeak', 'squeaky', 'squeakity']
 ChatGarblerHorse = ['neigh', 'brrr']
-ChatGarblerRabbit = ['eek',
- 'eepr',
- 'eepy',
- 'eeky']
+ChatGarblerRabbit = ['eek', 'eepr','eepy', 'eeky']
 ChatGarblerDuck = ['quack', 'quackity', 'quacky']
 ChatGarblerMonkey = ['ooh', 'ooo', 'ahh']
 ChatGarblerBear = ['growl', 'grrr']
 ChatGarblerPig = ['oink', 'oik', 'snort']
+ChatGarblerDeer = ['eee', 'yee', 'eeh']
 ChatGarblerDefault = ['blah']
 Bossbot = 'Bossbot'
 Lawbot = 'Lawbot'
@@ -5595,7 +5593,8 @@ AnimalToSpecies = {'dog': 'Dog',
  'duck': 'Duck',
  'monkey': 'Monkey',
  'bear': 'Bear',
- 'pig': 'Pig'}
+ 'pig': 'Pig',
+ 'deer': 'Deer'}
 NameTooLong = 'That name is too long. Please try again.'
 ToonAlreadyExists = 'You already have a toon named %s!'
 NameAlreadyInUse = 'That name is already used!'

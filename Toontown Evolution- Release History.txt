@@ -109,3 +109,6 @@
 2.1.0:
 1. Field Offices
 
+2.2.0:
+1. Added Deer as a new toon species
+2. Code Tweaks for Doodles 
