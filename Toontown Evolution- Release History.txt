@@ -112,3 +112,6 @@
 2.2.0:
 1. Added Deer as a new toon species
 2. Code Tweaks for Doodles 
+
+2.2.1:
+1. Added HP counter to Cog Panel 
