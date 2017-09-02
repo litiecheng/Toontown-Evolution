@@ -115,3 +115,6 @@
 
 2.2.1:
 1. Added HP counter to Cog Panel 
+
+2.2.2:
+1. Added Rain to Bossbot HQ 
