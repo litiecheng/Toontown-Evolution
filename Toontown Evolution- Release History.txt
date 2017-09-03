@@ -121,4 +121,4 @@
 
 2.3.0:
 1. Rain Manager for every playground
-2. Code Polishing for Townloader
+2. Code Polishing for TownLoader
