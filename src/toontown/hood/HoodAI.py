@@ -17,7 +17,7 @@ from toontown.suit import DistributedSuitPlannerAI
 from toontown.toon import NPCToons
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
-
+from toontown.environment import DistributedRainManagerAI
 
 class HoodAI:
     notify = directNotify.newCategory('HoodAI')
@@ -41,6 +41,7 @@ class HoodAI:
             dnaData = simbase.air.loadDNAFileAI(dnaStore, dnaFileName)
             self.air.dnaStoreMap[zoneId] = dnaStore
             self.air.dnaDataMap[zoneId] = dnaData
+            self.createRain()
 
     def getZoneTable(self):
         zoneTable = [self.zoneId]
@@ -237,3 +238,10 @@ class HoodAI:
 
     def startFireworks(self, showType, showIndex):
         self.fireworkShow.b_startShow(showType, showIndex, globalClockDelta.getRealNetworkTime())
+
+    def createRain(self):
+        for zoneId in self.getZoneTable():
+            self.rainMgr = DistributedRainManagerAI.DistributedRainManagerAI(self.air)
+            self.rainMgr.generateWithRequired(zoneId)
+            self.rainMgr.start(True)
+            self.notify.info('Rain Manager turned on for zone ' + str(zoneId))

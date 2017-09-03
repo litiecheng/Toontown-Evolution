@@ -80,7 +80,6 @@ from toontown.safezone import DistributedTreasure/AI
 from toontown.coghq import DistributedCashbotBossTreasure/AI
 from toontown.building import DistributedTrophyMgr/AI
 from toontown.building import DistributedBuilding/AI
-from toontown.building import DistributedAnimBuilding/AI
 from toontown.building import DistributedToonInterior/AI
 from toontown.building import DistributedToonHallInterior/AI
 from toontown.building import DistributedSuitInterior/AI
@@ -92,7 +91,6 @@ from toontown.building import DistributedBankInterior/AI
 from toontown.building import DistributedBankCollectable/AI
 from toontown.building import DistributedLibraryInterior/AI
 from toontown.building import DistributedDoor/AI
-from toontown.building import DistributedAnimDoor/AI
 from toontown.estate import DistributedHouseDoor/AI
 from toontown.coghq import DistributedCogHQDoor/AI
 from toontown.coghq import DistributedSellbotHQDoor/AI
@@ -309,6 +307,8 @@ from toontown.cogdominium import DistCogdoCrane/AI
 from toontown.cogdominium import DistCogdoCraneMoneyBag/AI
 from toontown.cogdominium import DistCogdoCraneCog/AI
 from toontown.parties.GlobalPartyManager/AI/UD import GlobalPartyManager/AI/UD
+from toontown.environment import DistributedRainManager/AI
+from toontown.environment import DistributedWeatherMGR/AI
 
 struct GiftItem {
   blob Item;
@@ -1568,9 +1568,6 @@ dclass DistributedBuilding : DistributedObject {
   setVictorReady() airecv clsend;
 };
 
-dclass DistributedAnimBuilding : DistributedBuilding {
-};
-
 dclass DistributedToonInterior : DistributedObject {
   setZoneIdAndBlock(uint32, uint16) required broadcast ram;
   setToonData(blob) required broadcast ram;
@@ -1783,9 +1780,6 @@ dclass DistributedDoor : DistributedObject {
   avatarExit(uint32) broadcast;
   setState(string, int16) required broadcast ram;
   setExitDoorState(string, int16) required broadcast ram;
-};
-
-dclass DistributedAnimDoor : DistributedDoor {
 };
 
 dclass DistributedHouseDoor : DistributedDoor {
@@ -3391,4 +3385,12 @@ dclass DistributedTrashcanZeroMgr : DistributedPhaseEventMgr {
 };
 
 dclass DistributedSillyMeterMgr : DistributedPhaseEventMgr {
+};
+
+dclass DistributedWeatherMGR : DistributedObject {
+  start() broadcast ram;
+  setState(string, int32) broadcast ram;
+};
+
+dclass DistributedRainManager : DistributedWeatherMGR {
 };
