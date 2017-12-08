@@ -26,7 +26,7 @@ from toontown.toon import ToonDNA
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
 from toontown.toontowngui import TTDialog
-
+from decimal import Decimal
 
 class MakeAToon(StateData.StateData):
     notify = DirectNotifyGlobal.directNotify.newCategory('MakeAToon')
@@ -87,6 +87,9 @@ class MakeAToon(StateData.StateData):
         self.focusOutIval = None
         self.focusInIval = None
         self.toon = None
+        self.defaultH = 180
+        self.lastRot = self.defaultH
+        self.toonRotateSlider = None
 
     def getToon(self):
         return self.toon
@@ -321,8 +324,8 @@ class MakeAToon(StateData.StateData):
         self.eee.destroy()
         self.guiNextButton.destroy()
         self.guiLastButton.destroy()
-        self.rotateLeftButton.destroy()
-        self.rotateRightButton.destroy()
+        if self.toonRotateSlider is not None:
+           self.toonRotateSlider.destroy()
         del self.guiTopBar
         del self.guiBottomBar
         del self.guiCancelButton
@@ -330,6 +333,7 @@ class MakeAToon(StateData.StateData):
         del self.eee
         del self.guiNextButton
         del self.guiLastButton
+        del self.toonRotateSlider
         del self.rotateLeftButton
         del self.rotateRightButton
         del self.names
@@ -462,8 +466,8 @@ class MakeAToon(StateData.StateData):
         self.gs.enter()
         self.guiNextButton.show()
         self.gs.showButtons()
-        self.rotateLeftButton.hide()
-        self.rotateRightButton.hide()
+        if self.toonRotateSlider:
+           self.toonRotateSlider.hide()
 
     def exitGenderShop(self):
         self.squishRoom(self.genderWalls)
@@ -480,10 +484,10 @@ class MakeAToon(StateData.StateData):
         self.bs.showButtons()
         self.guiNextButton.show()
         self.guiLastButton.show()
-        self.rotateLeftButton.show()
-        self.rotateRightButton.show()
+        self.toonRotateSlider.show()
 
     def enterBodyShop(self):
+        guiButton = loader.loadModel('phase_3/models/gui/quit_button')
         self.toon.show()
         self.shop = BODYSHOP
         self.guiTopBar['text'] = TTLocalizer.ShapeYourToonTitle
@@ -494,6 +498,13 @@ class MakeAToon(StateData.StateData):
         self.bs.enter(self.toon, self.shopsVisited)
         if BODYSHOP not in self.shopsVisited:
             self.shopsVisited.append(BODYSHOP)
+            if not self.toonRotateSlider:
+                self.toonRotateSlider = DirectSlider(parent = self.guiBottomBar, thumb_geom=(guiButton.find('**/QuitBtn_UP')), frameSize = (-0.8, 0.8, 0.1, -0.1), thumb_relief=None, thumb_geom_scale=1, text = 'Rotate', text_fg = (1, 1, 1, 1), text_style = 3, text_scale = 0.18, text_pos = (0.8, -0.04), text_align = TextNode.ALeft, scale = 1, value = 0, range = (-180, 180), command = self.rotateToonSlider)
+                self.toonRotateSlider.setPos(-0.1, 0, -0.07)
+                self.toonRotateSlider.setScale(0.5)
+                self.toonRotateSliderRotationText = OnscreenText("0.0", scale=.1, pos=(0, .1), fg=(1, 1, 1, 1), style = 3)
+                self.toonRotateSliderRotationText.reparentTo(self.toonRotateSlider.thumb)
+                self.toonRotateSlider['extraArgs'] = [self.toonRotateSlider]
         self.bodyShopOpening()
 
     def exitBodyShop(self):
@@ -516,8 +527,7 @@ class MakeAToon(StateData.StateData):
         self.cos.showButtons()
         self.guiNextButton.show()
         self.guiLastButton.show()
-        self.rotateLeftButton.show()
-        self.rotateRightButton.show()
+        self.toonRotateSlider.show()
 
     def enterColorShop(self):
         self.shop = COLORSHOP
@@ -552,8 +562,7 @@ class MakeAToon(StateData.StateData):
         self.guiNextButton.show()
         self.guiLastButton.show()
         self.cls.showButtons()
-        self.rotateLeftButton.show()
-        self.rotateRightButton.show()
+        self.toonRotateSlider.show()
 
     def enterClothesShop(self):
         self.shop = CLOTHESSHOP
@@ -606,8 +615,7 @@ class MakeAToon(StateData.StateData):
         self.spotlight.setPos(2, -1.95, 0.41)
         self.toon.setPos(Point3(1.5, -4, 0))
         self.toon.setH(120)
-        self.rotateLeftButton.hide()
-        self.rotateRightButton.hide()
+        self.toonRotateSlider.hide()
         if self.progressing:
             waittime = self.leftTime
         else:
@@ -786,3 +794,15 @@ class MakeAToon(StateData.StateData):
 
     def stopToonRotateRightTask(self, event):
         taskMgr.remove('rotateToonRightTask')
+
+    def rotateToonSlider(self, slider):
+        value = slider['value']
+        self.lastRot = value + self.defaultH
+        dec = Decimal(self.lastRot - self.defaultH)
+        self.toonRotateSliderRotationText['text'] = str(round(dec, 1))
+
+        self.rotateToon()
+
+    def rotateToon(self):
+        hpr = self.toon.getHpr()
+        self.toon.setHpr(self.lastRot, hpr[1], hpr[2])
