@@ -128,3 +128,6 @@
 
 2.3.2:
 1. Rotate Slider for Make A Toon
+
+2.3.3:
+1. Fixed Cog Icon scale for Quest Map

@@ -24,14 +24,14 @@ class QuestMap(DirectFrame):
         bg.setColor(0.5, 0.5, 0.5, 0.5)
         bg.setBin('fixed', 0)
         self.cogInfoFrame['geom'] = bg
-        self.cogInfoFrame['geom_pos'] = (0, 0, 0)
-        self.cogInfoFrame['geom_scale'] = (6, 1, 2)
+        self.cogInfoFrame['geom_pos'] = (1.2, 0, 0)
+        self.cogInfoFrame['geom_scale'] = (9, 1, 2)
         self.cogInfoFrame.setScale(0.05)
         self.cogInfoFrame.setPos(0, 0, 0.6)
         self.buildingMarkers = []
         self.av = av
         self.wantToggle = False
-        if base.config.GetBool('want-toggle-quest-map', True):
+        if config.GetBool('want-toggle-quest-map', True):
             self.wantToggle = True
         self.updateMarker = True
         self.cornerPosInfo = None
@@ -72,19 +72,18 @@ class QuestMap(DirectFrame):
         pIcon = icons.find('**/BoardIcon')
         cogInfoTextColor = (0.2, 0.2, 0.2, 1)
         textPos = (1.2, -0.2)
-        textScale = 0.8
-        self.cInfo = DirectLabel(parent=self.cogInfoFrame, text='', text_fg=cogInfoTextColor, text_pos=textPos, text_scale=textScale, geom=cIcon, geom_pos=(-0.2, 0, 0), geom_scale=0.8, relief=None)
+        textScale = 0.6
+        self.cInfo = DirectLabel(parent=self.cogInfoFrame, text='', text_fg=cogInfoTextColor, text_pos=textPos, text_scale=textScale, geom=cIcon, geom_pos=(0, 0, 0), geom_scale=0.6, relief=None)
         self.cInfo.setPos(-2.2, 0, 0.5)
-        self.lInfo = DirectLabel(parent=self.cogInfoFrame, text_fg=cogInfoTextColor, text='', text_pos=textPos, text_scale=textScale, geom=lIcon, geom_pos=(-0.2, 0, 0), geom_scale=0.8, relief=None)
+        self.lInfo = DirectLabel(parent=self.cogInfoFrame, text_fg=cogInfoTextColor, text='', text_pos=textPos, text_scale=textScale, geom=lIcon, geom_pos=(0, 0, 0), geom_scale=0.6, relief=None)
         self.lInfo.setPos(-2.2, 0, -0.5)
-        self.mInfo = DirectLabel(parent=self.cogInfoFrame, text_fg=cogInfoTextColor, text='', text_pos=textPos, text_scale=textScale, geom=mIcon, geom_pos=(-0.2, 0, 0), geom_scale=0.8, relief=None)
+        self.mInfo = DirectLabel(parent=self.cogInfoFrame, text_fg=cogInfoTextColor, text='', text_pos=textPos, text_scale=textScale, geom=mIcon, geom_pos=(0, 0, 0), geom_scale=0.6, relief=None)
         self.mInfo.setPos(0.8, 0, 0.5)
-        self.sInfo = DirectLabel(parent=self.cogInfoFrame, text_fg=cogInfoTextColor, text='', text_pos=textPos, text_scale=textScale, geom=sIcon, geom_pos=(-0.2, 0, 0), geom_scale=0.8, relief=None)
+        self.sInfo = DirectLabel(parent=self.cogInfoFrame, text_fg=cogInfoTextColor, text='', text_pos=textPos, text_scale=textScale, geom=sIcon, geom_pos=(0, 0, 0), geom_scale=0.6, relief=None)
         self.sInfo.setPos(0.8, 0, -0.5)
         self.pInfo = DirectLabel(parent=self.cogInfoFrame, text_fg=cogInfoTextColor, text='', text_pos=textPos, text_scale=textScale, geom=pIcon, geom_pos=(0, 0, 0), geom_scale=0.6, relief=None)
         self.pInfo.setPos(3.2, 0, 0.5)
         icons.removeNode()
-        return
 
     def updateCogInfo(self):
         currPercentage = self.suitPercentage.get(self.zoneId)
@@ -95,7 +94,6 @@ class QuestMap(DirectFrame):
         self.mInfo['text'] = '%s%%' % currPercentage[2]
         self.sInfo['text'] = '%s%%' % currPercentage[3]
         self.pInfo['text'] = '%s%%' % currPercentage[4]
-        return
 
     def destroy(self):
         self.ignore('questPageUpdated')
@@ -124,7 +122,6 @@ class QuestMap(DirectFrame):
         self.buildingMarkers.append(marker)
         iconNP.removeNode()
         gui.removeNode()
-        return
 
     def updateQuestInfo(self):
         for marker in self.buildingMarkers:
@@ -232,10 +229,7 @@ class QuestMap(DirectFrame):
                 self.marker.setPos(relX, 0, relY)
                 self.marker.setHpr(0, 0, -180 - self.av.getH())
             self.marker['geom_scale'] = 1.4 * task.time % 0.5 * 10 + 1
-            self.marker['geom_color'] = (1,
-             1,
-             1,
-             0.8 - 1.4 * task.time % 0.5 * 2 / 0.8 + 0.2)
+            self.marker['geom_color'] = (1, 1, 1, 0.8 - 1.4 * task.time % 0.5 * 2 / 0.8 + 0.2)
         if task.time < 1:
             return Task.cont
         else:
