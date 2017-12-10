@@ -93,6 +93,9 @@ class NametagGroup:
     def getUniqueName(self):
         return 'NametagGroup-' + str(id(self))
 
+    def getNameIcon(self):
+        return self.icon
+
     def tick(self, task):
         if (self.avatar is None) or (self.avatar.isEmpty()):
             return Task.cont

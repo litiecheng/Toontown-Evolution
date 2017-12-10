@@ -1,5 +1,6 @@
-from pandac.PandaModules import *
-from direct.showbase.PythonUtil import reduceAngle, randFloat, normalDistrib
+from panda3d.core import *
+from panda3d.direct import *
+from direct.showbase.PythonUtil  import reduceAngle, randFloat, normalDistrib
 from direct.showbase import DirectObject
 from toontown.pets.PetChase import PetChase
 from toontown.pets import PetConstants
@@ -12,7 +13,6 @@ class PetWander(PetChase, DirectObject.DirectObject):
         self.targetMoveCountdown = 0
         self.collEvent = None
         self.gotCollision = False
-        return
 
     def isCpp(self):
         return 0
@@ -21,7 +21,6 @@ class PetWander(PetChase, DirectObject.DirectObject):
         if self.collEvent is not None:
             self.ignore(self.collEvent)
             self.collEvent = None
-        return
 
     def _setMover(self, mover):
         PetChase.setMover(self, mover)
@@ -58,4 +57,5 @@ class PetWander(PetChase, DirectObject.DirectObject):
             target.setY(target, distance)
             duration = distance / self.mover.getFwdSpeed()
             self.targetMoveCountdown = duration * randFloat(1.2, 3.0)
+        
         PetChase.process(self, dt)

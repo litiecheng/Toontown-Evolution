@@ -1,89 +1,96 @@
-from direct.directnotify import DirectNotifyGlobal
-from direct.fsm.FSM import FSM
-import PetUtil, PetDNA, PetNameGenerator
+from toontown.pets import PetTraits
+from toontown.pets import PetUtil
 from toontown.hood import ZoneUtil
-from toontown.building import PetshopBuildingAI
-from toontown.toonbase import ToontownGlobals
+from toontown.pets import PetNameGenerator
 import random
-import cPickle, time, random, os
+import time
+from toontown.toon.DistributedToonAI import dna
 
-MINUTE = 60
-HOUR = 60 * MINUTE
-DAY = 24 * HOUR
+class PetCreator:
+    def __init__(self, air, avId, petSeed, nameIndex, gender, zoneId):
+        name, dna, traitSeed = PetUtil.getPetInfoFromSeed(petSeed, zoneId)
 
-def getDayId():
-    return int(time.time() // DAY)
-    
+        self.air = air
+        self.avId = avId
+        self.petSeed = petSeed
+        self.traitSeed = traitSeed
+        self.nameIndex = nameIndex
+        self.dna = dna
+        self.zoneId = ZoneUtil.getCanonicalSafeZoneId(zoneId)
+        self.traits = PetTraits.PetTraits(traitSeed=traitSeed, safeZoneId=zoneId)
+        self.gender = gender
+        self.petId = None
+        self.name = None
+
+    def _handleCreate(self, doId):
+        self.petId = doId
+        av = self.air.doId2do[self.avId]
+        av.b_setPetId(self.petId)
+        self.air.writeServerEvent('purchased-pet', avId=self.avId, petId=self.petId)
+
+    def createPet(self):
+        self.nameGen = PetNameGenerator.PetNameGenerator()
+        self.name = self.nameGen.getName(self.nameIndex)
+        self.air.dbInterface.createObject(
+            self.air.dbId,
+            self.air.dclassesByName['DistributedPetAI'],
+            {
+             'setOwnerId': [self.avId],
+             'setPetName': [self.name],
+             'setTraitSeed': [self.traitSeed],
+             'setSafeZone': [self.zoneId],
+             'setForgetfulness': [0],
+             'setBoredomThreshold': [0],
+             'setRestlessnessThreshold': [0],
+             'setPlayfulnessThreshold': [0],
+             'setLonelinessThreshold': [0],
+             'setSadnessThreshold': [0],
+             'setFatigueThreshold': [0],
+             'setHungerThreshold': [0],
+             'setExcitementThreshold': [0],
+             'setAngerThreshold': [0],
+             'setSurpriseThreshold': [0],
+             'setAffectionThreshold': [0],
+             'setHead': [self.dna[0]],
+             'setEars': [self.dna[1]],
+             'setNose': [self.dna[2]],
+             'setTail': [self.dna[3]],
+             'setBodyTexture': [self.dna[4]],
+             'setColor': [self.dna[5]],
+             'setColorScale': [self.dna[6]],
+             'setEyeColor': [self.dna[7]],
+             'setGender': [self.dna[8]],
+             'setLastSeenTimestamp': [0],
+             'setExcitement': [0],
+             'setBoredom': [0],
+             'setRestlessness': [0],
+             'setPlayfulness': [0],
+             'setLoneliness': [0],
+             'setSadness': [0],
+             'setAffection': [0],
+             'setHunger': [0],
+             'setAnger': [0],
+             'setTrickAptitudes': [[0, 0, 0, 0, 0, 0, 0]]
+             },
+            self._handleCreate)
+
 class PetManagerAI:
-    NUM_DAILY_PETS = 5 
-    cachePath = config.GetString('air-pet-cache', 'astron/databases/air_cache/')
+
     def __init__(self, air):
         self.air = air
-        self.cacheFile = '%spets_%d.pets' % (self.cachePath, self.air.districtId)
-        if os.path.isfile(self.cacheFile):
-            with open(self.cacheFile, 'rb') as f:
-                data = f.read()
-                
-            self.seeds = cPickle.loads(data)
-            if self.seeds.get('day', -1) != getDayId() or len(self.seeds.get(ToontownGlobals.ToontownCentral, [])) != self.NUM_DAILY_PETS:
-                self.generateSeeds()
-            
-        else:
-            self.generateSeeds()
-            
-        self.nameGen = PetNameGenerator.PetNameGenerator()        
-        
-    def generateSeeds(self):
-        seeds = range(0, 255)
-        random.shuffle(seeds)
-        
-        self.seeds = {}
-        for hood in (ToontownGlobals.ToontownCentral, ToontownGlobals.DonaldsDock, ToontownGlobals.DaisyGardens,
-                     ToontownGlobals.MinniesMelodyland, ToontownGlobals.TheBrrrgh, ToontownGlobals.DonaldsDreamland,
-                     ToontownGlobals.FunnyFarm):
-            self.seeds[hood] = [seeds.pop() for _ in xrange(self.NUM_DAILY_PETS)]
-            
-        self.seeds['day'] = getDayId()
-            
-        with open(self.cacheFile, 'wb') as f:
-             f.write(cPickle.dumps(self.seeds))
 
-        
-    def getAvailablePets(self, seed, safezoneId):
-        if self.seeds.get('day', -1) != getDayId():
-            self.generateSeeds()
-            
-        return self.seeds.get(safezoneId, [seed])
+    def getAvailablePets(self, numPets=5):
+        return random.sample(xrange(256), numPets)
 
-    def createNewPetFromSeed(self, avId, seed, nameIndex, gender, safeZoneId):
-        av = self.air.doId2do[avId]
-        
-        name = self.nameGen.getName(nameIndex)
-        _, dna, traitSeed = PetUtil.getPetInfoFromSeed(seed, safeZoneId)
-        head, ears, nose, tail, body, color, cs, eye, _ = dna
-        numGenders = len(PetDNA.PetGenders)
-        gender %= numGenders
-                
-        fields = {'setOwnerId' : avId, 'setPetName' : name, 'setTraitSeed' : traitSeed, 'setSafeZone' : safeZoneId,
-                  'setHead' : head, 'setEars' : ears, 'setNose' : nose, 'setTail' : tail, 'setBodyTexture' : body,
-                  'setColor' : color, 'setColorScale' : cs, 'setEyeColor' : eye, 'setGender' : gender}
-                  
-        def response(doId):
-            if not doId:
-                self.air.notify.warning("Cannot create pet for %s!" % avId)
-                return
-                
-            self.air.writeServerEvent('bought-pet', avId, doId)
-            av.b_setPetId(doId)
-            
-        self.air.dbInterface.createObject(self.air.dbId, self.air.dclassesByName['DistributedPetAI'],
-                                          {k: (v,) for k,v in fields.items()}, response)
-        
+    def createNewPetFromSeed(self, avId, petSeeds, nameIndex, gender, safeZoneId):
+        creator = PetCreator(self.air, avId, petSeeds, nameIndex, gender, safeZoneId)
+        creator.createPet()
+
     def deleteToonsPet(self, avId):
         av = self.air.doId2do[avId]
         pet = av.getPetId()
         if pet:
             if pet in self.air.doId2do:
                 self.air.doId2do[pet].requestDelete()
-                
         av.b_setPetId(0)
+        self.air.writeServerEvent('returned-pet', avId=avId, pet=pet)

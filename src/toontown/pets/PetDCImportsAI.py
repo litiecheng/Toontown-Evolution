@@ -1,2 +1,1 @@
-import DistributedPetAI
-import DistributedPetUD
+from toontown.pets import DistributedPetAI

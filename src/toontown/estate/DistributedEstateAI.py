@@ -7,6 +7,7 @@ from toontown.fishing import FishingTargetGlobals
 from toontown.safezone.DistributedFishingSpotAI import DistributedFishingSpotAI
 from toontown.safezone.SZTreasurePlannerAI import SZTreasurePlannerAI
 from toontown.safezone import TreasureGlobals
+from toontown.pets.DistributedPetAI import DistributedPetAI
 from toontown.toonbase import ToontownGlobals
 from toontown.estate import HouseGlobals
 
@@ -34,7 +35,7 @@ class DistributedEstateAI(DistributedObjectAI):
         self.spots = []
 
         self.targets = []
-
+        self.pets = []
         self.owner = None
         
     def generate(self):
@@ -102,6 +103,9 @@ class DistributedEstateAI(DistributedObjectAI):
             for target in self.targets:
                 target.requestDelete()
 
+            for pet in self.pets:
+                pet.requestDelete()
+
         if self.treasurePlanner is not None:
             self.treasurePlanner.stop()
         
@@ -138,6 +142,50 @@ class DistributedEstateAI(DistributedObjectAI):
     def createTreasurePlanner(self):
         self.treasurePlanner = SZTreasurePlannerAI(self.zoneId, *TreasureGlobals.SafeZoneTreasureSpawns[ToontownGlobals.MyEstate])
         self.treasurePlanner.start()
+
+    def initPets(self, owner):
+
+        def _queryAccount(dclass, fields):
+            avatarList = fields['ACCOUNT_AV_SET']
+
+            def _queryToon(dclass, fields):
+                petId, = fields['setPetId']
+
+                if not petId:
+                    return
+
+                # activate the pet object on the dbss
+                self.air.sendActivate(petId, self.air.districtId, self.zoneId, dclass=\
+                    self.air.dclassesByName['DistributedPetAI'])
+
+                # keep track of what pets are activated.
+                self.pets.append(petId)
+
+            for avId in avatarList:
+                if not avId:
+                    continue
+
+                self.air.dbInterface.queryObject(self.air.dbId, avId,
+                    callback=_queryToon)
+
+        self.air.dbInterface.queryObject(self.air.dbId, owner.DISLid,
+            callback=_queryAccount)
+
+    def destroyPet(self, owner):
+        for petId in self.pets:
+            if owner != self.air.doId2do.get(petId):
+                return
+
+            # now check if the pet has actually been activated
+            self.air.getActivated(petId, self.__handleGetPetActivated)
+
+    def __handleGetPetActivated(self, doId, activated):
+        # if the pet wasn't activated, dont destroy it.
+        if not activated or doId not in self.air.doId2do.keys():
+            return
+
+        # alright, all's good destroy the pet instance
+        self.air.doId2do[doId].requestDelete()
 
     def requestServerTime(self):
         avId = self.air.getAvatarIdFromSender()

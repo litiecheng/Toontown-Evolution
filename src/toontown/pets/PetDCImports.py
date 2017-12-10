@@ -1,1 +1,1 @@
-import DistributedPet
+from toontown.pets import DistributedPet

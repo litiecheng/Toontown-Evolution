@@ -21,13 +21,13 @@ class DistributedNPCPetclerkAI(DistributedNPCToonBaseAI):
 
     def avatarEnter(self):
         avId = self.air.getAvatarIdFromSender()
-        if not self.air.doId2do.has_key(avId):
+        if avId not in self.air.doId2do:
             self.notify.warning('Avatar: %s not found' % avId)
             return
         if self.isBusy():
             self.freeAvatar(avId)
             return
-        self.petSeeds = self.air.petMgr.getAvailablePets(3, ZoneUtil.getCanonicalHoodId(self.zoneId))
+        self.petSeeds = simbase.air.petMgr.getAvailablePets(5)
         numGenders = len(PetDNA.PetGenders)
         self.petSeeds *= numGenders
         self.petSeeds.sort()
@@ -128,8 +128,7 @@ class DistributedNPCPetclerkAI(DistributedNPCToonBaseAI):
         if av:
             simbase.air.petMgr.deleteToonsPet(avId)
             self.transactionType = 'return'
-            
-        self.transactionDone() 
+            self.transactionDone() 
 
     def transactionDone(self):
         avId = self.air.getAvatarIdFromSender()
@@ -146,11 +145,9 @@ class DistributedNPCPetclerkAI(DistributedNPCToonBaseAI):
             elif self.transactionType == '':
                 self.d_setMovie(avId, NPCToons.SELL_MOVIE_PETCANCELED)
         self.sendClearMovie(None)
-        return
 
     def __handleUnexpectedExit(self, avId):
         self.notify.warning('avatar:' + str(avId) + ' has exited unexpectedly')
         self.notify.warning('not busy with avId: %s, busy: %s ' % (avId, self.busy))
         taskMgr.remove(self.uniqueName('clearMovie'))
         self.sendClearMovie(None)
-        return

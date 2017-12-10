@@ -1,11 +1,12 @@
-from pandac.PandaModules import *
+from panda3d.core import *
+from panda3d.direct import *
 from direct.showbase.PythonUtil import Enum, invertDictLossless
 import math
 from toontown.toonbase import ToontownGlobals
 OurPetsMoodChangedKey = 'OurPetsMoodChanged'
 ThinkPeriod = 1.5
 MoodDriftPeriod = 300.0
-MovePeriod = 0.02
+MovePeriod = 1.0 / 4
 PosBroadcastPeriod = 1.0 / 5
 LonelinessUpdatePeriod = 100.0
 SubmergeDistance = 0.7
@@ -54,9 +55,9 @@ SCRATCH_DIST = {'long': 2.0,
 TELEPORT_IN_DURATION = 2.34
 TELEPORT_OUT_DURATION = 4.5
 ZoneToCostRange = {ToontownGlobals.ToontownCentral: (100, 500),
- ToontownGlobals.DonaldsDock: (600, 1700),
- ToontownGlobals.DaisyGardens: (1000, 2500),
- ToontownGlobals.MinniesMelodyland: (1500, 3000),
- ToontownGlobals.TheBrrrgh: (2500, 4000),
- ToontownGlobals.DonaldsDreamland: (3000, 5000),
- ToontownGlobals.FunnyFarm: (3700, 5800)}
+ ToontownGlobals.OutdoorZone: (600, 1700),
+ ToontownGlobals.DonaldsDock: (1000, 2500),
+ ToontownGlobals.DaisyGardens: (1500, 3000),
+ ToontownGlobals.MinniesMelodyland: (2500, 4000),
+ ToontownGlobals.TheBrrrgh: (3000, 5000),
+ ToontownGlobals.DonaldsDreamland: (4000, 6000)}

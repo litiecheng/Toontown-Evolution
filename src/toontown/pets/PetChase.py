@@ -1,11 +1,12 @@
-from pandac.PandaModules import *
-from direct.showbase.PythonUtil import reduceAngle
+from panda3d.core import *
+from panda3d.direct import *
+from direct.showbase.PythonUtil  import reduceAngle
 from otp.movement import Impulse
 import math
 
 class PetChase(Impulse.Impulse):
 
-    def __init__(self, target = None, minDist = None, moveAngle = None):
+    def __init__(self, target = None, minDist = 5.0, moveAngle = 20.0):
         Impulse.Impulse.__init__(self)
         self.target = target
         if minDist is None:
@@ -18,10 +19,21 @@ class PetChase(Impulse.Impulse):
         self.lookAtNode.hide()
         self.vel = None
         self.rotVel = None
-        return
 
     def setTarget(self, target):
         self.target = target
+        
+    def setMinDist(self, minDist):
+        self.minDist = minDist
+    
+    def getMinDist(self):
+        return self.minDist
+        
+    def setMoveAngle(self, moveAngle):
+        self.moveAngle = moveAngle
+    
+    def getMoveAngle(self):
+        return self.moveAngle
 
     def destroy(self):
         self.lookAtNode.removeNode()
@@ -54,6 +66,7 @@ class PetChase(Impulse.Impulse):
             vH = rotSpeed
         else:
             vH = 0
+
         if abs(vH * dt) > abs(relH):
             vH = relH / dt
         if distance > self.minDist and abs(relH) < self.moveAngle:
@@ -69,7 +82,3 @@ class PetChase(Impulse.Impulse):
         if vH:
             self.rotVel.setX(vH)
             self.mover.addRotShove(self.rotVel)
-
-    def setMinDist(self, minDist):
-        self.minDist = minDist
- 

@@ -1,4 +1,4 @@
-from pandac.PandaModules import *
+from panda3d.core import *
 from direct.directnotify import DirectNotifyGlobal
 from direct.interval.IntervalGlobal import *
 from direct.fsm.ClassicFSM import *
@@ -26,7 +26,7 @@ Component2IconDict = {'boredom': 'Bored',
  'anger': 'Angry',
  'surprise': 'Surprised',
  'affection': 'Love'}
- 
+
 from toontown.nametag import *
 from toontown.nametag.NametagGlobals import *
 from toontown.nametag.NametagGroup import *
@@ -42,6 +42,7 @@ class Pet(Avatar.Avatar):
      Interactions.NEUTRAL: 'neutral'}
 
     def __init__(self, forGui = 0):
+        self.doodleChat = base.config.GetBool('want-doodle-chat', False)
         Avatar.Avatar.__init__(self)
         self.serialNum = Pet.SerialNum
         Pet.SerialNum += 1
@@ -70,8 +71,6 @@ class Pet(Avatar.Avatar):
         self.soundTeleportIn = None
         self.soundTeleportOut = None
         self.teleportHole = None
-        self.setBlend(frameBlend = True)
-        return
 
     def isPet(self):
         return True
@@ -105,22 +104,20 @@ class Pet(Avatar.Avatar):
         self.leftBrow = None
         self.color = None
         Avatar.Avatar.delete(self)
-        return
 
     def getDNA(self):
         return self.style
 
-    def setDNA(self, dna):
-        if self.style:
+    def setDNA(self, dna, forceDNA = False):
+        if self.style or forceDNA == True:
             pass
         else:
             self.style = dna
             self.generatePet()
-            self.generateMoods()
             self.initializeDropShadow()
             self.initializeNametag3d()
+            self.generateMoods()
             self.dropShadow.setScale(0.75)
-        self.setBlend(frameBlend = True)
 
     def generatePet(self):
         self.loadModel('phase_4/models/char/TT_pets-mod')
@@ -265,8 +262,6 @@ class Pet(Avatar.Avatar):
         self.eyesClosedTexture.setMinfilter(Texture.FTLinear)
         self.eyesClosedTexture.setMagfilter(Texture.FTLinear)
         self.eyesOpen()
-        self.setBlend(frameBlend = True)
-        return None
 
     def initializeBodyCollisions(self, collIdStr):
         Avatar.Avatar.initializeBodyCollisions(self, collIdStr)
@@ -282,38 +277,34 @@ class Pet(Avatar.Avatar):
         return color
 
     def generateMoods(self):
-    	nodePath = NodePath(self.nametag.getIcon())
+        nodePath = NodePath(self.nametag.getNameIcon())
 
-    	if not nodePath:
-    		return
+        if not nodePath:
+            return
 
         moodIcons = loader.loadModel('phase_4/models/char/petEmotes')
         self.moodIcons = nodePath.attachNewNode('moodIcons')
         self.moodIcons.setScale(6.0)
         self.moodIcons.setZ(3.5)
+
         moods = moodIcons.findAllMatches('**/+GeomNode')
-        for moodNum in range(0, moods.getNumPaths()):
+        for moodNum in xrange(0, moods.getNumPaths()):
             mood = moods.getPath(moodNum)
             mood.reparentTo(self.moodIcons)
             mood.setBillboardPointEye()
             mood.hide()
-            
+
         moodIcons.removeNode()
 
     def clearMood(self):
         if self.moodModel:
             self.moodModel.hide()
         self.moodModel = None
-        return
 
     def showMood(self, mood):
-        if hasattr(base.cr, 'newsManager') and base.cr.newsManager:
-            holidayIds = base.cr.newsManager.getHolidayIdList()
-            if (ToontownGlobals.APRIL_FOOLS_COSTUMES in holidayIds or ToontownGlobals.SILLYMETER_EXT_HOLIDAY in holidayIds) and not mood == 'confusion':
-                self.speakMood(mood)
-                return
-            else:
-                self.clearChat()
+        #if base.cr.newsManager.isHolidayRunning(ToontownGlobals.APRIL_TOONS_WEEK) and mood != 'confusion':
+        if self.doodleChat and mood != 'confusion':
+            self.speakMood(mood)
         else:
             self.clearChat()
         mood = Component2IconDict[mood]
@@ -331,7 +322,10 @@ class Pet(Avatar.Avatar):
         self.moodModel = moodModel
         if self.moodModel:
             self.moodModel.show()
-        return
+        self.moodModel.setScale(0, 0, 0)
+        Sequence(
+            self.moodModel.scaleInterval(.2, VBase3(1.1, 1.1, 1.1), blendType = 'easeInOut'),
+            self.moodModel.scaleInterval(.09, VBase3(1, 1, 1), blendType = 'easeInOut')).start()
 
     def speakMood(self, mood):
         self.setChatAbsolute(random.choice(TTLocalizer.SpokenMoods[mood]), CFSpeech)
@@ -639,7 +633,6 @@ class Pet(Avatar.Avatar):
         if not self.lockedDown:
             self.animFSM.request(self.prevAnimState)
             self.prevAnimState = None
-        return
 
     def getInteractIval(self, interactId):
         anims = self.InteractAnims[interactId]
@@ -658,7 +651,7 @@ def gridPets():
     offsetX = 0
     offsetY = 0
     startPos = base.localAvatar.getPos()
-    for body in range(0, len(BodyTypes)):
+    for body in xrange(0, len(BodyTypes)):
         colors = getColors(body)
         for color in colors:
             p = Pet()

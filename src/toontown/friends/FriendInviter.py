@@ -14,6 +14,7 @@ from toontown.pets import Pet
 from otp.otpbase import OTPLocalizer
 from otp.otpbase import OTPGlobals
 from otp.uberdog import RejectCode
+
 globalFriendInviter = None
 
 def showFriendInviter(avId, avName, avDisableName):
@@ -22,24 +23,18 @@ def showFriendInviter(avId, avName, avDisableName):
         globalFriendInviter.cleanup()
         globalFriendInviter = None
     globalFriendInviter = FriendInviter(avId, avName, avDisableName)
-    return
-
 
 def hideFriendInviter():
     global globalFriendInviter
     if globalFriendInviter != None:
         globalFriendInviter.cleanup()
         globalFriendInviter = None
-    return
-
 
 def unloadFriendInviter():
     global globalFriendInviter
     if globalFriendInviter != None:
         globalFriendInviter.cleanup()
         globalFriendInviter = None
-    return
-
 
 class FriendInviter(DirectFrame):
     notify = DirectNotifyGlobal.directNotify.newCategory('FriendInviter')
@@ -112,7 +107,6 @@ class FriendInviter(DirectFrame):
             self.fsm.request('getNewFriend')
         else:
             self.fsm.request('begin')
-        return
 
     def cleanup(self):
         self.fsm.request('cancel')
@@ -262,7 +256,6 @@ class FriendInviter(DirectFrame):
         self['text'] = OTPLocalizer.FriendInviterNotAvailable % self.getName()
         self.context = None
         self.bOk.show()
-        return
 
     def exitNotAvailable(self):
         self.bOk.hide()
@@ -271,7 +264,6 @@ class FriendInviter(DirectFrame):
         self['text'] = OTPLocalizer.FriendInviterFriendSaidNoNewFriends % self.getName()
         self.context = None
         self.bOk.show()
-        return
 
     def exitNotAcceptingFriends(self):
         self.bOk.hide()
@@ -283,7 +275,6 @@ class FriendInviter(DirectFrame):
                 base.cr.friendManager.up_cancelFriendQuery(self.context)
                 self.context = None
         self.bOk.show()
-        return
 
     def exitWentAway(self):
         self.bOk.hide()
@@ -304,7 +295,6 @@ class FriendInviter(DirectFrame):
             self.bCancel.setPos(0.2, 0.0, -0.1)
         self.bStop.show()
         self.bCancel.show()
-        return
 
     def exitAlready(self):
         self['text'] = ''
@@ -331,7 +321,6 @@ class FriendInviter(DirectFrame):
                 self['text'] = OTPLocalizer.FriendInviterAskingMyPet % self.getName()
         self.context = None
         self.bOk.show()
-        return
 
     def exitAskingPet(self):
         self.bOk.hide()
@@ -348,7 +337,6 @@ class FriendInviter(DirectFrame):
         self.context = None
         self.bYes.show()
         self.bNo.show()
-        return
 
     def exitEndFriendship(self):
         self.bYes.hide()
@@ -373,7 +361,6 @@ class FriendInviter(DirectFrame):
         self['text'] = OTPLocalizer.FriendInviterSelf
         self.context = None
         self.bOk.show()
-        return
 
     def exitSelf(self):
         self.bOk.hide()
@@ -382,7 +369,6 @@ class FriendInviter(DirectFrame):
         self['text'] = OTPLocalizer.FriendInviterIgnored % self.toonName
         self.context = None
         self.bOk.show()
-        return
 
     def exitIgnored(self):
         self.bOk.hide()
@@ -402,7 +388,6 @@ class FriendInviter(DirectFrame):
         self['text'] = OTPLocalizer.FriendInviterFriendSaidYes % self.toonName
         self.context = None
         self.bOk.show()
-        return
 
     def exitYes(self):
         self.bOk.hide()
@@ -411,7 +396,6 @@ class FriendInviter(DirectFrame):
         self['text'] = OTPLocalizer.FriendInviterFriendSaidNo % self.toonName
         self.context = None
         self.bOk.show()
-        return
 
     def exitNo(self):
         self.bOk.hide()
@@ -420,7 +404,6 @@ class FriendInviter(DirectFrame):
         self['text'] = OTPLocalizer.FriendInviterOtherTooMany % self.toonName
         self.context = None
         self.bOk.show()
-        return
 
     def exitOtherTooMany(self):
         self.bOk.hide()
@@ -429,7 +412,6 @@ class FriendInviter(DirectFrame):
         self['text'] = OTPLocalizer.FriendInviterMaybe % self.toonName
         self.context = None
         self.bOk.show()
-        return
 
     def exitMaybe(self):
         self.bOk.hide()
@@ -438,7 +420,6 @@ class FriendInviter(DirectFrame):
         self['text'] = OTPLocalizer.FriendInviterDown
         self.context = None
         self.bOk.show()
-        return
 
     def exitDown(self):
         self.bOk.hide()
@@ -449,7 +430,6 @@ class FriendInviter(DirectFrame):
                 base.cr.friendManager.up_cancelFriendQuery(self.context)
                 self.context = None
         self.fsm.request('off')
-        return
 
     def exitCancel(self):
         pass

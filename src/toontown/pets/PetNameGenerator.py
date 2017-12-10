@@ -4,8 +4,10 @@ from toontown.toonbase import TTLocalizer
 import os
 from direct.showbase import AppRunnerGlobal
 from direct.directnotify import DirectNotifyGlobal
-from pandac.PandaModules import *
-import PetNameMasterEnglish
+from panda3d.core import *
+from panda3d.direct import *
+from toontown.pets import PetNamesEnglish
+from StringIO import StringIO
 
 class PetNameGenerator:
     notify = DirectNotifyGlobal.directNotify.newCategory('PetNameGenerator')
@@ -21,16 +23,14 @@ class PetNameGenerator:
         self.girlFirsts = []
         self.neutralFirsts = []
         self.nameDictionary = {}
-        contents = PetNameMasterEnglish.NAMES
-        if not contents:
-            self.notify.error('PetNameGenerator: Error opening name list text file.')        
-        lines = contents.split('\n')
-        for line in lines:
-            if line is not None:
-                if line.lstrip()[0:1] != '#':
-                    a1 = line.find('*')
-                    a2 = line.find('*', a1 + 1)
-                    self.nameDictionary[int(line[0:a1])] = (int(line[a1 + 1:a2]), line[a2 + 1:len(line)].strip())
+        input = StringIO(PetNamesEnglish.PETNAMES)
+        currentLine = input.readline()
+        while currentLine:
+            if currentLine.lstrip()[0:1] != '#':
+                a1 = currentLine.find('*')
+                a2 = currentLine.find('*', a1 + 1)
+                self.nameDictionary[int(currentLine[0:a1])] = (int(currentLine[a1 + 1:a2]), currentLine[a2 + 1:len(currentLine) - 1].strip())
+            currentLine = input.readline()
 
         masterList = [self.boyFirsts, self.girlFirsts, self.neutralFirsts]
         for tu in self.nameDictionary.values():

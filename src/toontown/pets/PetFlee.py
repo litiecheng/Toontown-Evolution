@@ -1,5 +1,6 @@
-from pandac.PandaModules import *
-from direct.showbase.PythonUtil import reduceAngle
+from panda3d.core import *
+from panda3d.direct import *
+from direct.showbase.PythonUtil  import reduceAngle
 from otp.movement import Impulse
 
 class PetFlee(Impulse.Impulse):
@@ -13,7 +14,6 @@ class PetFlee(Impulse.Impulse):
         self.lookAtNode.hide()
         self.vel = None
         self.rotVel = None
-        return
 
     def destroy(self):
         self.lookAtNode.removeNode()
@@ -48,6 +48,7 @@ class PetFlee(Impulse.Impulse):
             vH = rotSpeed
         else:
             vH = 0
+
         if abs(vH * dt) > abs(relH):
             vH = relH / dt
         if distance < self.maxDist and abs(relH) < self.moveAngle:
