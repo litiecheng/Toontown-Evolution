@@ -2,7 +2,7 @@
 1. Official Public Release
 
 1.1.0:
-1 Shirt Style and Bottom Style Buttons for Clothes GUI in Make A Toon
+1. Shirt Style and Bottom Style Buttons for Clothes GUI in Make A Toon
 
 1.1.1:
 1. Toon on Loading Screen
