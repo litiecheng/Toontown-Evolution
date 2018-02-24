@@ -134,3 +134,6 @@
 
 2.4.0:
 1. Bug Fixes for Doodles
+
+2.4.1:
+1. Cog Heads for Cog Disguises
